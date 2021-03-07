@@ -44,6 +44,18 @@ class App(BaseModel):
     manage_teams = permissions.flag(1 << 3)
     authenticate_users = permissions.flag(1 << 4)
 
+    def as_dict(self, with_token: bool = False) -> dict[str, Any]:
+        """Get the app as a dict to return from the API."""
+        extra = {}
+        if with_token:
+            extra['password'] = self.token
+        return {
+            'display_name': self.display_name,
+            'permissions': self.permissions,
+            'username': f'A{self.id}',
+            **extra
+        }
+
     def reset_token(self):
         """Reset the app's token."""
         self.token = generate_token()
@@ -98,8 +110,8 @@ class Session(BaseModel):
     def as_dict(self) -> dict[str, Any]:
         """Get the account as a dict to be returned as JSON."""
         return {
-            'id': self.id,
-            'token': self.token,
+            'username': f'S{self.id}',
+            'password': self.token,
             'expires_at': self.expires_at.to_timestamp()
         }
 

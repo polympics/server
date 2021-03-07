@@ -117,4 +117,4 @@ async def reset_token(
         raise HTTPException(401, 'An app token was not used to authenticate.')
     scope.app.reset_token()
     scope.app.save()
-    return scope.app.as_dict()
+    return scope.app.as_dict(with_token=True)
