@@ -6,6 +6,7 @@ name = "pypi"
 [packages]
 peewee = "*"
 fastapi = "*"
+psycopg2 = "*"
 
 [dev-packages]
 flake8 = "*"
@@ -16,6 +17,7 @@ flake8-import-order = "*"
 flake8-string-format = "*"
 flake8-tidy-imports = "*"
 flake8-todo = "*"
+uvicorn = "*"
 
 [requires]
 python_version = "3.9"
