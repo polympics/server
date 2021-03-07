@@ -118,9 +118,8 @@ async def create_session(
     return session.as_dict()
 
 
-@server.post('/token/reset')
-async def reset_token(
-        scope: Scope = Depends(authenticate)) -> dict[str, Any]:
+@server.post('/app/reset_token')
+async def reset_token(scope: Scope = Depends(authenticate)) -> dict[str, Any]:
     """Reset the token used to authenticate.
 
     Only applicable for apps.
@@ -130,3 +129,11 @@ async def reset_token(
     scope.app.reset_token()
     scope.app.save()
     return scope.app.as_dict(with_token=True)
+
+
+@server.get('/app')
+async def get_app(scope: Scope = Depends(authenticate)) -> dict[str, Any]:
+    """Get metadata on the authenticated app."""
+    if not scope.app:
+        raise HTTPException(401, 'An app token was not used to authenticate.')
+    return scope.app.as_dict()
