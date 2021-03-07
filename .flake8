@@ -1,0 +1,6 @@
+[flake8]
+# B008: Function call in parameter default (used by FastAPI).
+# W503: Line break before binary operator (deprecated).
+# ANN101/ANN102: No annotation for self/cls argument.
+ignore = B008,W503,ANN101,ANN102
+suppress_none_returning = true
