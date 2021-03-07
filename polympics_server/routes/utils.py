@@ -28,7 +28,7 @@ class Paginate:
         total = query.count()
         total_pages = math.ceil(total / self.per_page)
         data = [
-            record.as_json() for record in
+            record.as_dict() for record in
             query.offset(self.page * self.per_page).limit(self.per_page)
         ]
         return {

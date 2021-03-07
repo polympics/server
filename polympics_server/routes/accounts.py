@@ -24,6 +24,8 @@ class AccountEditForm(BaseModel):
 
     display_name: Optional[str] = None
     team: Optional[Team] = None
+    grant_permissions: Optional[int] = None
+    revoke_permissions: Optional[int] = None
 
 
 @server.post('/accounts/signup', status_code=201)
@@ -79,6 +81,16 @@ async def update_account(
     if data.team:
         auth_assert(scope.manage_account_teams or scope.owns_team(data.team))
         account.team = data.team
+    if data.grant_permissions:
+        auth_assert(scope.can_alter_permissions(
+            account, data.grant_permissions
+        ))
+        account.permissions |= data.grant_permissions
+    if data.revoke_permissions:
+        auth_assert(scope.can_alter_permissions(
+            account, data.revoke_permissions
+        ))
+        account.permissions &= ~data.revoke_permissions
     account.save()
 
 
