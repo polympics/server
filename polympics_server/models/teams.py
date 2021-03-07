@@ -16,7 +16,7 @@ class Team(BaseModel):
         return {
             'id': self.id,
             'name': self.name,
-            'created_at': self.created_at.to_timestamp(),
+            'created_at': self.created_at.timestamp(),
             'member_count': self.members.count()
         }
 

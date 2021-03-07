@@ -112,7 +112,7 @@ class Session(BaseModel):
         return {
             'username': f'S{self.id}',
             'password': self.token,
-            'expires_at': self.expires_at.to_timestamp()
+            'expires_at': self.expires_at.timestamp()
         }
 
 

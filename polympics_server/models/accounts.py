@@ -29,7 +29,7 @@ class Account(BaseModel):
             'display_name': self.display_name,
             'team': self.team.as_dict(),
             'permissions': self.permissions,
-            'created_at': self.created_at.to_timestamp()
+            'created_at': self.created_at.timestamp()
         }
 
 
