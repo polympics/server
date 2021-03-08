@@ -1,4 +1,6 @@
 """Peewee ORM models."""
+from __future__ import annotations
+
 from datetime import datetime
 from typing import Any, Callable, Iterable
 
@@ -30,7 +32,15 @@ class BaseModel(peewee.Model):
     @classmethod
     def __get_validators__(cls) -> Iterable[Callable]:
         """Get pydantic validators."""
-        yield cls.get_by_id
+        yield cls.convert
+
+    @classmethod
+    def convert(cls, model_id: int) -> BaseModel:
+        """Get a model from an ID, or raise ValueError."""
+        try:
+            return cls.get_by_id(model_id)
+        except peewee.DoesNotExist:
+            raise ValueError(f'{cls.__name__} not found.')
 
     @classmethod
     def __modify_schema__(cls, field_schema: dict[str, Any]):

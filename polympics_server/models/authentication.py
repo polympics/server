@@ -67,7 +67,7 @@ class App(BaseModel):
             app=self,
             manage_permissions=self.manage_permissions,
             manage_account_teams=self.manage_account_teams,
-            manage_account_details=self.manage_account_teams,
+            manage_account_details=self.manage_account_details,
             manage_teams=self.manage_teams,
             authenticate_users=self.authenticate_users
         )
@@ -93,7 +93,7 @@ class Session(BaseModel):
     @property
     def expired(self) -> bool:
         """Return False, because app tokens don't expire."""
-        return self.expires_at > datetime.now()
+        return self.expires_at < datetime.now()
 
     @property
     def scope(self) -> Scope:
@@ -102,7 +102,7 @@ class Session(BaseModel):
             account=self.account,
             manage_permissions=self.account.manage_permissions,
             manage_account_teams=self.account.manage_account_teams,
-            manage_account_details=self.account.manage_account_teams,
+            manage_account_details=self.account.manage_account_details,
             manage_teams=self.account.manage_teams,
             manage_own_team=self.account.manage_own_team
         )
@@ -138,21 +138,21 @@ class Scope:
         )
 
     def can_alter_permissions(
-            self, account: Account, permissions: int) -> bool:
+            self, team: Team, permissions: int) -> bool:
         """Check if the owner of the scope can alter given permissions."""
         if permissions > (1 << 5) - 1:
             # Sets a value higher than any user permission.
             return False
-        for n, self_has_perm in (
+        for n, self_has_perm in enumerate((
                 self.manage_permissions, self.manage_account_teams,
                 self.manage_account_details, self.manage_teams,
-                self.manage_own_team, self.authenticate_users):
+                self.manage_own_team, self.authenticate_users)):
             if not self_has_perm:
                 if permissions & (1 << n):
                     # Can't grant permissions you don't have.
                     return False
         if not self.manage_permissions:
-            if self.manage_own_team and account.team == self.account.team:
+            if self.manage_own_team and team == self.account.team:
                 if permissions == (1 << 4):
                     # Can allow another user to manage a team you can, even
                     # without manage_permissions permission.

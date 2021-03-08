@@ -1,7 +1,7 @@
 """Account creation, viewing and editing."""
 from typing import Any, Optional
 
-from fastapi import Depends, HTTPException
+from fastapi import Depends, HTTPException, Response
 
 import peewee
 
@@ -17,6 +17,7 @@ class SignupForm(BaseModel):
     discord_id: int
     display_name: str
     team: Team
+    permissions: int = 0
 
 
 class AccountEditForm(BaseModel):
@@ -34,10 +35,12 @@ async def signup(
         scope: Scope = Depends(authenticate)) -> dict[str, Any]:
     """Create a new account."""
     auth_assert(scope.manage_account_details)
+    if data.permissions:
+        auth_assert(scope.can_alter_permissions(data.team, data.permissions))
     try:
         account = Account.create(
             discord_id=data.discord_id, display_name=data.display_name,
-            team=data.team
+            team=data.team, permissions=data.permissions
         )
     except peewee.IntegrityError:
         raise HTTPException(409, 'That Discord ID is already registered.')
@@ -73,7 +76,7 @@ async def authorised_account(
 @server.patch('/account/{account}', status_code=204)
 async def update_account(
         account: Account, data: AccountEditForm,
-        scope: Scope = Depends(authenticate)):
+        scope: Scope = Depends(authenticate)) -> Response:
     """Edit an account."""
     if data.display_name:
         auth_assert(scope.manage_account_details)
@@ -83,7 +86,7 @@ async def update_account(
         account.team = data.team
     if data.grant_permissions:
         auth_assert(scope.can_alter_permissions(
-            account, data.grant_permissions
+            account.team, data.grant_permissions
         ))
         account.permissions |= data.grant_permissions
     if data.revoke_permissions:
@@ -92,6 +95,7 @@ async def update_account(
         ))
         account.permissions &= ~data.revoke_permissions
     account.save()
+    return Response(status_code=204)
 
 
 @server.get('/account/{account}')
@@ -102,10 +106,11 @@ async def get_account(account: Account) -> dict[str, Any]:
 
 @server.delete('/account/{account}', status_code=204)
 async def delete_account(
-        account: Account, scope: Scope = Depends(authenticate)):
+        account: Account, scope: Scope = Depends(authenticate)) -> Response:
     """Delete an account."""
     auth_assert(scope.manage_account_details)
     account.delete_instance()
+    return Response(status_code=204)
 
 
 @server.post('/account/{account}/session', status_code=201)

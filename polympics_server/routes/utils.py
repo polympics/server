@@ -48,17 +48,19 @@ def authenticate(
     elif credentials.username.upper().startswith('S'):
         model = Session
     else:
-        return None
+        return Scope()
     try:
         id = int(credentials.username[1:])
     except ValueError:
-        return None
+        return Scope()
     session = model.get_or_none(
         (model.id == id) & (model.token == credentials.password)
     )
+    if not session:
+        return Scope()
     if session.expired:
         session.delete_instance()
-        return None
+        return Scope()
     return session.scope
 
 

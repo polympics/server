@@ -1,7 +1,7 @@
 """Team creation, viewing and editing."""
 from typing import Any
 
-from fastapi import Depends
+from fastapi import Depends, Response
 
 from pydantic import BaseModel
 
@@ -45,15 +45,18 @@ async def get_team(team: Team) -> dict[str, Any]:
 @server.patch('/team/{team}', status_code=204)
 async def edit_team(
         team: Team, data: TeamData,
-        scope: Scope = Depends(authenticate)) -> dict[str, Any]:
+        scope: Scope = Depends(authenticate)) -> Response:
     """Edit a team's name."""
     auth_assert(scope.manage_teams or scope.owns_team(team))
     team.name = data.name
     team.save()
+    return Response(status_code=204)
 
 
 @server.delete('/team/{team}', status_code=204)
-async def delete_team(team: Team, scope: Scope = Depends(authenticate)):
+async def delete_team(
+        team: Team, scope: Scope = Depends(authenticate)) -> Response:
     """Delete a team."""
     auth_assert(scope.manage_teams or scope.owns_team(team))
     team.delete_instance()
+    return Response(status_code=204)
