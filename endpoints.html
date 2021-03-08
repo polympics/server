@@ -1,0 +1,404 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>List of API endpoints &mdash; Polympics API Server 0.0.1 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Pagination" href="pagination.html" />
+    <link rel="prev" title="Authentication" href="authentication.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Polympics API Server
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="authentication.html">Authentication</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">List of API endpoints</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#account-related-endpoints">Account-related endpoints</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#post-acounts-signup"><code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/acounts/signup</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#p-get-accounts-search"><code class="docutils literal notranslate"><span class="pre">[P]</span> <span class="pre">GET</span> <span class="pre">/accounts/search</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#get-accounts-me"><code class="docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/accounts/me</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#patch-account-account"><code class="docutils literal notranslate"><span class="pre">PATCH</span> <span class="pre">/account/{account}</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#get-account-account"><code class="docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/account/{account}</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#delete-account-account"><code class="docutils literal notranslate"><span class="pre">DELETE</span> <span class="pre">/account/{account}</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#post-account-account-session"><code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/account/{account}/session</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#app-related-endpoints">App-related endpoints</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#post-app-reset-token"><code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/app/reset_token</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#get-app"><code class="docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/app</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#team-related-endpoints">Team-related endpoints</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#post-teams-new"><code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/teams/new</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#p-get-teams-search"><code class="docutils literal notranslate"><span class="pre">[P]</span> <span class="pre">GET</span> <span class="pre">/teams/search</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#get-team-team"><code class="docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/team/{team}</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#patch-team-team"><code class="docutils literal notranslate"><span class="pre">PATCH</span> <span class="pre">/team/{team}</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#delete-team-team"><code class="docutils literal notranslate"><span class="pre">DELETE</span> <span class="pre">/team/{team}</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="pagination.html">Pagination</a></li>
+<li class="toctree-l1"><a class="reference internal" href="permissions.html">Permissions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="types.html">Types of JSON object</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Polympics API Server</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>List of API endpoints</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/endpoints.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="list-of-api-endpoints">
+<h1>List of API endpoints<a class="headerlink" href="#list-of-api-endpoints" title="Permalink to this headline">¶</a></h1>
+<p>Some endpoints which may return a large number of results use <a class="reference internal" href="pagination.html"><span class="doc">Pagination</span></a>.
+These are marked with <code class="docutils literal notranslate"><span class="pre">[P]</span></code> below.</p>
+<p>See <a class="reference internal" href="authentication.html"><span class="doc">Authentication</span></a> for details on how to authenticate when using the API.</p>
+<p>See <a class="reference internal" href="types.html"><span class="doc">Types of JSON object</span></a> for the structure of objects returned by the API.</p>
+<div class="section" id="account-related-endpoints">
+<h2>Account-related endpoints<a class="headerlink" href="#account-related-endpoints" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="post-acounts-signup">
+<h3><code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/acounts/signup</span></code><a class="headerlink" href="#post-acounts-signup" title="Permalink to this headline">¶</a></h3>
+<p>Parameters (JSON body):</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">discord_id</span></code> (<code class="docutils literal notranslate"><span class="pre">int</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">display_name</span></code> (<code class="docutils literal notranslate"><span class="pre">string</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">team</span></code> (<code class="docutils literal notranslate"><span class="pre">int</span></code>, the ID of the team)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">permissions</span></code> (optional <code class="docutils literal notranslate"><span class="pre">int</span></code>, default <code class="docutils literal notranslate"><span class="pre">0</span></code>)</p></li>
+</ul>
+<p>Returns an <code class="docutils literal notranslate"><span class="pre">Account</span></code> object, or a <code class="docutils literal notranslate"><span class="pre">409</span></code> error if the <code class="docutils literal notranslate"><span class="pre">discord_id</span></code> has already been registered.</p>
+<p>Requires the <code class="docutils literal notranslate"><span class="pre">manage_account_details</span></code> permission. Additionally, see <a class="reference internal" href="permissions.html"><span class="doc">Permissions</span></a> for what permissions you are allowed to grant.</p>
+</div>
+<div class="section" id="p-get-accounts-search">
+<h3><code class="docutils literal notranslate"><span class="pre">[P]</span> <span class="pre">GET</span> <span class="pre">/accounts/search</span></code><a class="headerlink" href="#p-get-accounts-search" title="Permalink to this headline">¶</a></h3>
+<p>Parameters (URL query string):</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">q</span></code> (optional <code class="docutils literal notranslate"><span class="pre">string</span></code>, to search for)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">team</span></code> (optional <code class="docutils literal notranslate"><span class="pre">int</span></code>, the ID of a team)</p></li>
+</ul>
+<p>If <code class="docutils literal notranslate"><span class="pre">team</span></code> is passed, only returns accounts from that team.</p>
+<p>Returns a paginated list of <code class="docutils literal notranslate"><span class="pre">Account</span></code> objects matching the query (see <a class="reference internal" href="pagination.html"><span class="doc">Pagination</span></a>).</p>
+</div>
+<div class="section" id="get-accounts-me">
+<h3><code class="docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/accounts/me</span></code><a class="headerlink" href="#get-accounts-me" title="Permalink to this headline">¶</a></h3>
+<p>Returns the <code class="docutils literal notranslate"><span class="pre">Account</span></code> object associated with the session used to authenticate.</p>
+<p>Returns a <code class="docutils literal notranslate"><span class="pre">401</span></code> error if an user session was not used to authenticate.</p>
+</div>
+<div class="section" id="patch-account-account">
+<h3><code class="docutils literal notranslate"><span class="pre">PATCH</span> <span class="pre">/account/{account}</span></code><a class="headerlink" href="#patch-account-account" title="Permalink to this headline">¶</a></h3>
+<p>Parameters (dynamic URL path):</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">account</span></code> (<code class="docutils literal notranslate"><span class="pre">int</span></code>, the ID of the account to get)</p></li>
+</ul>
+<p>Parameters (JSON body):</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">display_name</span></code> (optional <code class="docutils literal notranslate"><span class="pre">string</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">team</span></code> (optional <code class="docutils literal notranslate"><span class="pre">int</span></code>, the ID of the team to move the user to)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">grant_permissions</span></code> (optional <code class="docutils literal notranslate"><span class="pre">int</span></code>, permissions to grant the user)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">revoke_permissions</span></code> (optional <code class="docutils literal notranslate"><span class="pre">int</span></code>, permissions to revoke from the user)</p></li>
+</ul>
+<p>Returns a <code class="docutils literal notranslate"><span class="pre">422</span></code> error if the account was not found (<strong>not</strong> a <code class="docutils literal notranslate"><span class="pre">404</span></code> error).</p>
+<p>If the request was successful, returns <code class="docutils literal notranslate"><span class="pre">204</span></code> (no content).</p>
+<p>Different parameters require different permissions:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 34%" />
+<col style="width: 66%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Parameter</p></th>
+<th class="head"><p>Permission</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">display_name</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">manage_account_details</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">team</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">manage_account_teams</span></code> <sup>*1</sup></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">grant_permissions</span></code></p></td>
+<td><p>See <a class="reference internal" href="permissions.html"><span class="doc">Permissions</span></a></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">revoke_permissions</span></code></p></td>
+<td><p>See <a class="reference internal" href="permissions.html"><span class="doc">Permissions</span></a></p></td>
+</tr>
+</tbody>
+</table>
+<p><sup>*1</sup> You can also add a user to a team if you are a
+member of that team and have the <code class="docutils literal notranslate"><span class="pre">manage_own_team</span></code> permission.</p>
+</div>
+<div class="section" id="get-account-account">
+<h3><code class="docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/account/{account}</span></code><a class="headerlink" href="#get-account-account" title="Permalink to this headline">¶</a></h3>
+<p>Parameters (dynamic URL path):</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">account</span></code> (<code class="docutils literal notranslate"><span class="pre">int</span></code>, the ID of the account to get)</p></li>
+</ul>
+<p>Returns an <code class="docutils literal notranslate"><span class="pre">Account</span></code> object if successful.</p>
+<p>Returns a <code class="docutils literal notranslate"><span class="pre">422</span></code> error if the account was not found (<strong>not</strong> a <code class="docutils literal notranslate"><span class="pre">404</span></code> error).</p>
+</div>
+<div class="section" id="delete-account-account">
+<h3><code class="docutils literal notranslate"><span class="pre">DELETE</span> <span class="pre">/account/{account}</span></code><a class="headerlink" href="#delete-account-account" title="Permalink to this headline">¶</a></h3>
+<p>Parameters (dynamic URL path):</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">account</span></code> (<code class="docutils literal notranslate"><span class="pre">int</span></code>, the ID of the account to get)</p></li>
+</ul>
+<p>Returns <code class="docutils literal notranslate"><span class="pre">204</span></code> (no content) if successful.</p>
+<p>Returns a <code class="docutils literal notranslate"><span class="pre">422</span></code> error if the account was not found (<strong>not</strong> a <code class="docutils literal notranslate"><span class="pre">404</span></code> error).</p>
+<p>Requires the <code class="docutils literal notranslate"><span class="pre">manage_account_details</span></code> permission.</p>
+</div>
+<div class="section" id="post-account-account-session">
+<h3><code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/account/{account}/session</span></code><a class="headerlink" href="#post-account-account-session" title="Permalink to this headline">¶</a></h3>
+<p>Parameters (dynamic URL path):</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">account</span></code> (<code class="docutils literal notranslate"><span class="pre">int</span></code>, the ID of the account to get)</p></li>
+</ul>
+<p>Returns a <code class="docutils literal notranslate"><span class="pre">Session</span></code> object, or a <code class="docutils literal notranslate"><span class="pre">422</span></code> error if the account was not found (<strong>not</strong> a <code class="docutils literal notranslate"><span class="pre">404</span></code> error).</p>
+<p>Requires the <code class="docutils literal notranslate"><span class="pre">authenticate_users</span></code> permission, which only apps can have.</p>
+</div>
+</div>
+<div class="section" id="app-related-endpoints">
+<h2>App-related endpoints<a class="headerlink" href="#app-related-endpoints" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="post-app-reset-token">
+<h3><code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/app/reset_token</span></code><a class="headerlink" href="#post-app-reset-token" title="Permalink to this headline">¶</a></h3>
+<p>Reset the app token used to authenticate. Returns an <code class="docutils literal notranslate"><span class="pre">App</span></code> object with a token present (the new token).</p>
+<p>Returns a <code class="docutils literal notranslate"><span class="pre">401</span></code> error if an app token was not used to authenticate.</p>
+</div>
+<div class="section" id="get-app">
+<h3><code class="docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/app</span></code><a class="headerlink" href="#get-app" title="Permalink to this headline">¶</a></h3>
+<p>Returns the <code class="docutils literal notranslate"><span class="pre">App</span></code> object (with no token present) associated with the token used to authenticate.</p>
+<p>Returns a <code class="docutils literal notranslate"><span class="pre">401</span></code> error if an app token was not used to authenticate.</p>
+</div>
+</div>
+<div class="section" id="team-related-endpoints">
+<h2>Team-related endpoints<a class="headerlink" href="#team-related-endpoints" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="post-teams-new">
+<h3><code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/teams/new</span></code><a class="headerlink" href="#post-teams-new" title="Permalink to this headline">¶</a></h3>
+<p>Parameters (JSON body):</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">name</span></code> (<code class="docutils literal notranslate"><span class="pre">string</span></code>)</p></li>
+</ul>
+<p>Returns a new <code class="docutils literal notranslate"><span class="pre">Team</span></code> object. Requires the <code class="docutils literal notranslate"><span class="pre">manage_teams</span></code> permission.</p>
+</div>
+<div class="section" id="p-get-teams-search">
+<h3><code class="docutils literal notranslate"><span class="pre">[P]</span> <span class="pre">GET</span> <span class="pre">/teams/search</span></code><a class="headerlink" href="#p-get-teams-search" title="Permalink to this headline">¶</a></h3>
+<p>Parameters (URL query string):</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">q</span></code> (optional <code class="docutils literal notranslate"><span class="pre">string</span></code>)</p></li>
+</ul>
+<p>Returns a paginated list of <code class="docutils literal notranslate"><span class="pre">Team</span></code> objects (see <a class="reference internal" href="pagination.html"><span class="doc">Pagination</span></a>). The optional <code class="docutils literal notranslate"><span class="pre">q</span></code> parameter allows you to filter teams by searching in their name.</p>
+</div>
+<div class="section" id="get-team-team">
+<h3><code class="docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/team/{team}</span></code><a class="headerlink" href="#get-team-team" title="Permalink to this headline">¶</a></h3>
+<p>Parameters (dynamic URL path):</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">team</span></code> (<code class="docutils literal notranslate"><span class="pre">int</span></code>, ID of the team to get)</p></li>
+</ul>
+<p>Returns a <code class="docutils literal notranslate"><span class="pre">Team</span></code> object, or a <code class="docutils literal notranslate"><span class="pre">422</span></code> error if not found (<strong>not</strong> a <code class="docutils literal notranslate"><span class="pre">404</span></code> error).</p>
+</div>
+<div class="section" id="patch-team-team">
+<h3><code class="docutils literal notranslate"><span class="pre">PATCH</span> <span class="pre">/team/{team}</span></code><a class="headerlink" href="#patch-team-team" title="Permalink to this headline">¶</a></h3>
+<p>Parameters (dynamic URL path):</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">team</span></code> (<code class="docutils literal notranslate"><span class="pre">int</span></code>, ID of the team to edit)</p></li>
+</ul>
+<p>Parameters (JSON body):</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">name</span></code> (<code class="docutils literal notranslate"><span class="pre">string</span></code>, the new name of the team)</p></li>
+</ul>
+<p>Returns <code class="docutils literal notranslate"><span class="pre">204</span></code> (no content) if successful, or a <code class="docutils literal notranslate"><span class="pre">422</span></code> error if not found (<strong>not</strong> a <code class="docutils literal notranslate"><span class="pre">404</span></code> error).</p>
+<p>Requires the <code class="docutils literal notranslate"><span class="pre">manage_teams</span></code> permission, or the <code class="docutils literal notranslate"><span class="pre">manage_own_team</span></code> permission and authentication with an account that is a member of the specified team.</p>
+</div>
+<div class="section" id="delete-team-team">
+<h3><code class="docutils literal notranslate"><span class="pre">DELETE</span> <span class="pre">/team/{team}</span></code><a class="headerlink" href="#delete-team-team" title="Permalink to this headline">¶</a></h3>
+<p>Parameters (dynamic URL path):</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">team</span></code> (<code class="docutils literal notranslate"><span class="pre">int</span></code>, ID of the team to delete)</p></li>
+</ul>
+<p>Returns <code class="docutils literal notranslate"><span class="pre">204</span></code> (no content) if successful, or a <code class="docutils literal notranslate"><span class="pre">422</span></code> error if not found (<strong>not</strong> a <code class="docutils literal notranslate"><span class="pre">404</span></code> error).</p>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="pagination.html" class="btn btn-neutral float-right" title="Pagination" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="authentication.html" class="btn btn-neutral float-left" title="Authentication" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, Artemis.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
