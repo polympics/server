@@ -12,6 +12,7 @@ class Account(BaseModel):
 
     discord_id = peewee.BigIntegerField(primary_key=True)
     display_name = peewee.CharField()
+    # FIXME: Handle team being deleted.
     team = peewee.ForeignKeyField(Team, backref='members')
     permissions = peewee.BitField(default=0)
 

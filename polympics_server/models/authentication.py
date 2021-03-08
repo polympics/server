@@ -86,7 +86,9 @@ class Session(BaseModel):
     created by an App, and the token should be passed to the client.
     """
 
-    account = peewee.ForeignKeyField(Account, backref='sessions')
+    account = peewee.ForeignKeyField(
+        Account, backref='sessions', on_delete='CASCADE'
+    )
     expires_at = peewee.DateTimeField(default=get_expires_time)
     token = peewee.CharField(default=generate_token)
 
