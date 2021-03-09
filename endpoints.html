@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>List of API endpoints &mdash; Polympics API Server 0.0.1 documentation</title>
+  <title>List of API endpoints &mdash; Polympics API Server 0.1.0 documentation</title>
   
 
   
@@ -196,7 +196,9 @@ These are marked with <code class="docutils literal notranslate"><span class="pr
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">discord_id</span></code> (<code class="docutils literal notranslate"><span class="pre">int</span></code>)</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">display_name</span></code> (<code class="docutils literal notranslate"><span class="pre">string</span></code>)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">team</span></code> (<code class="docutils literal notranslate"><span class="pre">int</span></code>, the ID of the team)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">discriminator</span></code> (<code class="docutils literal notranslate"><span class="pre">int</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">avatar_url</span></code> (optional <code class="docutils literal notranslate"><span class="pre">string</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">team</span></code> (optional <code class="docutils literal notranslate"><span class="pre">int</span></code>, the ID of the team)</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">permissions</span></code> (optional <code class="docutils literal notranslate"><span class="pre">int</span></code>, default <code class="docutils literal notranslate"><span class="pre">0</span></code>)</p></li>
 </ul>
 <p>Returns an <code class="docutils literal notranslate"><span class="pre">Account</span></code> object, or a <code class="docutils literal notranslate"><span class="pre">409</span></code> error if the <code class="docutils literal notranslate"><span class="pre">discord_id</span></code> has already been registered.</p>
@@ -226,6 +228,8 @@ These are marked with <code class="docutils literal notranslate"><span class="pr
 <p>Parameters (JSON body):</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">display_name</span></code> (optional <code class="docutils literal notranslate"><span class="pre">string</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">discriminator</span></code> (optional <code class="docutils literal notranslate"><span class="pre">int</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">avatar_url</span></code> (optional <code class="docutils literal notranslate"><span class="pre">string</span></code>)</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">team</span></code> (optional <code class="docutils literal notranslate"><span class="pre">int</span></code>, the ID of the team to move the user to)</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">grant_permissions</span></code> (optional <code class="docutils literal notranslate"><span class="pre">int</span></code>, permissions to grant the user)</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">revoke_permissions</span></code> (optional <code class="docutils literal notranslate"><span class="pre">int</span></code>, permissions to revoke from the user)</p></li>
@@ -245,6 +249,12 @@ These are marked with <code class="docutils literal notranslate"><span class="pr
 </thead>
 <tbody>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">display_name</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">manage_account_details</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">discriminator</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">manage_account_details</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">avatar_url</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">manage_account_details</span></code></p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">team</span></code></p></td>

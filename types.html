@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Types of JSON object &mdash; Polympics API Server 0.0.1 documentation</title>
+  <title>Types of JSON object &mdash; Polympics API Server 0.1.0 documentation</title>
   
 
   
@@ -170,7 +170,9 @@
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">discord_id</span></code> (<code class="docutils literal notranslate"><span class="pre">int</span></code>)</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">display_name</span></code> (<code class="docutils literal notranslate"><span class="pre">string</span></code>)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">team</span></code> (<code class="docutils literal notranslate"><span class="pre">Team</span></code> object)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">discriminator</span></code> (<code class="docutils literal notranslate"><span class="pre">int</span></code>, 4 digit Discord discriminator)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">avatar_url</span></code> (optional <code class="docutils literal notranslate"><span class="pre">string</span></code>, full URL to an avatar)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">team</span></code> (optional <code class="docutils literal notranslate"><span class="pre">Team</span></code> object)</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">permissions</span></code> (<code class="docutils literal notranslate"><span class="pre">int</span></code>, see <a class="reference internal" href="permissions.html"><span class="doc">Permissions</span></a>)</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">created_at</span></code> (<code class="docutils literal notranslate"><span class="pre">decimal</span></code>, seconds since the UNIX epoch)</p></li>
 </ul>
