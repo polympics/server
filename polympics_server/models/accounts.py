@@ -12,8 +12,11 @@ class Account(BaseModel):
 
     discord_id = peewee.BigIntegerField(primary_key=True)
     display_name = peewee.CharField()
-    # FIXME: Handle team being deleted.
-    team = peewee.ForeignKeyField(Team, backref='members')
+    discriminator = peewee.IntegerField()
+    team = peewee.ForeignKeyField(
+        Team, backref='members', null=True, on_delete='SET NULL'
+    )
+    avatar_url = peewee.CharField(max_length=512, null=True)
     permissions = peewee.BitField(default=0)
 
     manage_permissions = permissions.flag(1 << 0)
@@ -28,7 +31,9 @@ class Account(BaseModel):
         return {
             'discord_id': self.discord_id,
             'display_name': self.display_name,
-            'team': self.team.as_dict(),
+            'discriminator': self.discriminator,
+            'avatar_url': self.avatar_url,
+            'team': self.team.as_dict() if self.team else None,
             'permissions': self.permissions,
             'created_at': self.created_at.timestamp()
         }

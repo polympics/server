@@ -19,7 +19,9 @@ Parameters (JSON body):
 
 - ``discord_id`` (``int``)
 - ``display_name`` (``string``)
-- ``team`` (``int``, the ID of the team)
+- ``discriminator`` (``int``)
+- ``avatar_url`` (optional ``string``)
+- ``team`` (optional ``int``, the ID of the team)
 - ``permissions`` (optional ``int``, default ``0``)
 
 Returns an ``Account`` object, or a ``409`` error if the ``discord_id`` has already been registered.
@@ -55,6 +57,8 @@ Parameters (dynamic URL path):
 Parameters (JSON body):
 
 - ``display_name`` (optional ``string``)
+- ``discriminator`` (optional ``int``)
+- ``avatar_url`` (optional ``string``)
 - ``team`` (optional ``int``, the ID of the team to move the user to)
 - ``grant_permissions`` (optional ``int``, permissions to grant the user)
 - ``revoke_permissions`` (optional ``int``, permissions to revoke from the user)
@@ -69,6 +73,8 @@ Different parameters require different permissions:
 Parameter              Permission
 ====================== ===========================================
 ``display_name``       ``manage_account_details``
+``discriminator``      ``manage_account_details``
+``avatar_url``         ``manage_account_details``
 ``team``               ``manage_account_teams`` :superscript:`\*1`
 ``grant_permissions``  See :doc:`/permissions`
 ``revoke_permissions`` See :doc:`/permissions`

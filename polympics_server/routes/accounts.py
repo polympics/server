@@ -16,7 +16,9 @@ class SignupForm(BaseModel):
 
     discord_id: int
     display_name: str
-    team: Team
+    discriminator: int
+    avatar_url: Optional[str] = None
+    team: Optional[Team] = None
     permissions: int = 0
 
 
@@ -24,6 +26,8 @@ class AccountEditForm(BaseModel):
     """A form for editing an account."""
 
     display_name: Optional[str] = None
+    discriminator: Optional[int] = None
+    avatar_url: Optional[str] = None
     team: Optional[Team] = None
     grant_permissions: Optional[int] = None
     revoke_permissions: Optional[int] = None
@@ -40,7 +44,8 @@ async def signup(
     try:
         account = Account.create(
             discord_id=data.discord_id, display_name=data.display_name,
-            team=data.team, permissions=data.permissions
+            team=data.team, permissions=data.permissions,
+            discriminator=data.discriminator, avatar_url=data.avatar_url
         )
     except peewee.IntegrityError:
         raise HTTPException(409, 'That Discord ID is already registered.')
@@ -81,6 +86,12 @@ async def update_account(
     if data.display_name:
         auth_assert(scope.manage_account_details)
         account.display_name = data.display_name
+    if data.discriminator:
+        auth_assert(scope.manage_account_teams)
+        account.discriminator = data.discriminator
+    if data.avatar_url:
+        auth_assert(scope.manage_account_details)
+        account.avatar_url = data.avatar_url
     if data.team:
         auth_assert(scope.manage_account_teams or scope.owns_team(data.team))
         account.team = data.team
