@@ -17,7 +17,7 @@ Account-related endpoints
 
 Parameters (JSON body):
 
-- ``discord_id`` (``int``)
+- ``discord_id`` (``int`` or ``string`` representing int)
 - ``display_name`` (``string``)
 - ``discriminator`` (``int``)
 - ``avatar_url`` (optional ``string``)

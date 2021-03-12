@@ -7,7 +7,7 @@ Types of JSON object
 
 Attributes:
 
-- ``discord_id`` (``int``)
+- ``discord_id`` (``string``, representing an int)
 - ``display_name`` (``string``)
 - ``discriminator`` (``int``, 4 digit Discord discriminator)
 - ``avatar_url`` (optional ``string``, full URL to an avatar)
