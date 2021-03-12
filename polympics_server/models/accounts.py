@@ -29,7 +29,7 @@ class Account(BaseModel):
     def as_dict(self) -> dict[str, Any]:
         """Get the account as a dict to be returned as JSON."""
         return {
-            'discord_id': self.discord_id,
+            'discord_id': str(self.discord_id),
             'display_name': self.display_name,
             'discriminator': self.discriminator,
             'avatar_url': self.avatar_url,
