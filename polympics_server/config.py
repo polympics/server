@@ -51,6 +51,7 @@ def get_timedelta(field: str, default: timedelta) -> timedelta:
 
 DEBUG = config.get('debug', False)
 MAX_SESSION_AGE = config.get('max_session_age', timedelta(minutes=30))
+ALLOWED_ORIGINS = config.get('allowed_origins', [])
 
 DB_NAME = config.get('db_name', 'polympics')
 DB_USER = config.get('db_user', 'polympics')

@@ -3,6 +3,7 @@ import math
 from typing import Any
 
 from fastapi import Depends, FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 
 import peewee
@@ -13,6 +14,14 @@ from ..models import App, Scope, Session
 
 server = FastAPI(debug=config.DEBUG, title='Polympics API')
 security = HTTPBasic()
+
+server.add_middleware(
+    CORSMiddleware,
+    allow_origins=config.ALLOWED_ORIGINS,
+    allow_credentials=True,
+    allow_methods=['*'],
+    allow_headers=['Authorization', 'Content-Type'],
+)
 
 
 class Paginate:
