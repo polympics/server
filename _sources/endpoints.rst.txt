@@ -65,7 +65,7 @@ Parameters (JSON body):
 
 Returns a ``422`` error if the account was not found (**not** a ``404`` error).
 
-If the request was successful, returns ``204`` (no content).
+Returns an ``Account`` object if successful.
 
 Different parameters require different permissions:
 
@@ -176,7 +176,7 @@ Parameters (JSON body):
 
 - ``name`` (``string``, the new name of the team)
 
-Returns ``204`` (no content) if successful, or a ``422`` error if not found (**not** a ``404`` error).
+Returns a ``Team`` object if successful, or a ``422`` error if not found (**not** a ``404`` error).
 
 Requires the ``manage_teams`` permission, or the ``manage_own_team`` permission and authentication with an account that is a member of the specified team.
 

@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>List of API endpoints &mdash; Polympics API Server 0.2.1 documentation</title>
+  <title>List of API endpoints &mdash; Polympics API Server 0.2.2 documentation</title>
   
 
   
@@ -235,7 +235,7 @@ These are marked with <code class="docutils literal notranslate"><span class="pr
 <li><p><code class="docutils literal notranslate"><span class="pre">revoke_permissions</span></code> (optional <code class="docutils literal notranslate"><span class="pre">int</span></code>, permissions to revoke from the user)</p></li>
 </ul>
 <p>Returns a <code class="docutils literal notranslate"><span class="pre">422</span></code> error if the account was not found (<strong>not</strong> a <code class="docutils literal notranslate"><span class="pre">404</span></code> error).</p>
-<p>If the request was successful, returns <code class="docutils literal notranslate"><span class="pre">204</span></code> (no content).</p>
+<p>Returns an <code class="docutils literal notranslate"><span class="pre">Account</span></code> object if successful.</p>
 <p>Different parameters require different permissions:</p>
 <table class="docutils align-default">
 <colgroup>
@@ -349,7 +349,7 @@ member of that team and have the <code class="docutils literal notranslate"><spa
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">name</span></code> (<code class="docutils literal notranslate"><span class="pre">string</span></code>, the new name of the team)</p></li>
 </ul>
-<p>Returns <code class="docutils literal notranslate"><span class="pre">204</span></code> (no content) if successful, or a <code class="docutils literal notranslate"><span class="pre">422</span></code> error if not found (<strong>not</strong> a <code class="docutils literal notranslate"><span class="pre">404</span></code> error).</p>
+<p>Returns a <code class="docutils literal notranslate"><span class="pre">Team</span></code> object if successful, or a <code class="docutils literal notranslate"><span class="pre">422</span></code> error if not found (<strong>not</strong> a <code class="docutils literal notranslate"><span class="pre">404</span></code> error).</p>
 <p>Requires the <code class="docutils literal notranslate"><span class="pre">manage_teams</span></code> permission, or the <code class="docutils literal notranslate"><span class="pre">manage_own_team</span></code> permission and authentication with an account that is a member of the specified team.</p>
 </div>
 <div class="section" id="delete-team-team">
