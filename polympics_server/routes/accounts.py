@@ -78,7 +78,7 @@ async def authorised_account(
     return scope.account.as_dict()
 
 
-@server.patch('/account/{account}', status_code=204)
+@server.patch('/account/{account}')
 async def update_account(
         account: Account, data: AccountEditForm,
         scope: Scope = Depends(authenticate)) -> Response:
@@ -106,7 +106,7 @@ async def update_account(
         ))
         account.permissions &= ~data.revoke_permissions
     account.save()
-    return Response(status_code=204)
+    return account.as_dict()
 
 
 @server.get('/account/{account}')

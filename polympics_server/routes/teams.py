@@ -42,7 +42,7 @@ async def get_team(team: Team) -> dict[str, Any]:
     return team.as_dict()
 
 
-@server.patch('/team/{team}', status_code=204)
+@server.patch('/team/{team}')
 async def edit_team(
         team: Team, data: TeamData,
         scope: Scope = Depends(authenticate)) -> Response:
@@ -50,7 +50,7 @@ async def edit_team(
     auth_assert(scope.manage_teams or scope.owns_team(team))
     team.name = data.name
     team.save()
-    return Response(status_code=204)
+    return team.as_dict()
 
 
 @server.delete('/team/{team}', status_code=204)
