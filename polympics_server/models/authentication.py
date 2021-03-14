@@ -34,7 +34,7 @@ class App(BaseModel):
     service.
     """
 
-    display_name = peewee.CharField()
+    name = peewee.CharField()
     token = peewee.CharField(default=generate_token)
     permissions = peewee.BitField(default=0)
 
@@ -50,7 +50,7 @@ class App(BaseModel):
         if with_token:
             extra['password'] = self.token
         return {
-            'display_name': self.display_name,
+            'name': self.name,
             'permissions': self.permissions,
             'username': f'A{self.id}',
             **extra
@@ -102,6 +102,7 @@ class Session(BaseModel):
         """Get the scope of the session (the same as that of the account)."""
         return Scope(
             account=self.account,
+            account_session=self,
             manage_permissions=self.account.manage_permissions,
             manage_account_teams=self.account.manage_account_teams,
             manage_account_details=self.account.manage_account_details,
@@ -117,11 +118,17 @@ class Session(BaseModel):
             'expires_at': self.expires_at.timestamp()
         }
 
+    def reset_token(self):
+        """Reset the app's token."""
+        self.token = generate_token()
+        self.expires_at = get_expires_time()
+
 
 @dataclasses.dataclass
 class Scope:
     """Authorisation scope for the authenticated user/app."""
 
+    account_session: Optional[Session] = None
     account: Optional[Account] = None
     app: Optional[App] = None
     manage_permissions: bool = False

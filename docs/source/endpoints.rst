@@ -12,19 +12,19 @@ See :doc:`/types` for the structure of objects returned by the API.
 Account-related endpoints
 =========================
 
-``POST /acounts/signup``
+``POST /acounts/new``
 ------------------------
 
 Parameters (JSON body):
 
-- ``discord_id`` (``int`` or ``string`` representing int)
-- ``display_name`` (``string``)
-- ``discriminator`` (``int``)
+- ``id`` (``int`` or ``string`` representing int, a Discord ID)
+- ``name`` (``string``)
+- ``discriminator`` (``string``)
 - ``avatar_url`` (optional ``string``)
 - ``team`` (optional ``int``, the ID of the team)
 - ``permissions`` (optional ``int``, default ``0``)
 
-Returns an ``Account`` object, or a ``409`` error if the ``discord_id`` has already been registered.
+Returns an ``Account`` object, or a ``409`` error if the ``id`` has already been registered.
 
 Requires the ``manage_account_details`` permission. Additionally, see :doc:`/permissions` for what permissions you are allowed to grant.
 
@@ -40,13 +40,6 @@ If ``team`` is passed, only returns accounts from that team.
 
 Returns a paginated list of ``Account`` objects matching the query (see :doc:`/pagination`).
 
-``GET /accounts/me``
---------------------
-
-Returns the ``Account`` object associated with the session used to authenticate.
-
-Returns a ``401`` error if an user session was not used to authenticate.
-
 ``PATCH /account/{account}``
 ----------------------------
 
@@ -56,8 +49,8 @@ Parameters (dynamic URL path):
 
 Parameters (JSON body):
 
-- ``display_name`` (optional ``string``)
-- ``discriminator`` (optional ``int``)
+- ``name`` (optional ``string``)
+- ``discriminator`` (optional ``string``)
 - ``avatar_url`` (optional ``string``)
 - ``team`` (optional ``int``, the ID of the team to move the user to)
 - ``grant_permissions`` (optional ``int``, permissions to grant the user)
@@ -72,7 +65,7 @@ Different parameters require different permissions:
 ====================== ===========================================
 Parameter              Permission
 ====================== ===========================================
-``display_name``       ``manage_account_details``
+``name``               ``manage_account_details``
 ``discriminator``      ``manage_account_details``
 ``avatar_url``         ``manage_account_details``
 ``team``               ``manage_account_teams`` :superscript:`\*1`
@@ -106,34 +99,6 @@ Returns ``204`` (no content) if successful.
 Returns a ``422`` error if the account was not found (**not** a ``404`` error).
 
 Requires the ``manage_account_details`` permission.
-
-``POST /account/{account}/session``
------------------------------------
-
-Parameters (dynamic URL path):
-
-- ``account`` (``int``, the ID of the account to get)
-
-Returns a ``Session`` object, or a ``422`` error if the account was not found (**not** a ``404`` error).
-
-Requires the ``authenticate_users`` permission, which only apps can have.
-
-App-related endpoints
-=====================
-
-``POST /app/reset_token``
--------------------------
-
-Reset the app token used to authenticate. Returns an ``App`` object with a token present (the new token).
-
-Returns a ``401`` error if an app token was not used to authenticate.
-
-``GET /app``
-------------
-
-Returns the ``App`` object (with no token present) associated with the token used to authenticate.
-
-Returns a ``401`` error if an app token was not used to authenticate.
 
 Team-related endpoints
 ======================
@@ -189,3 +154,42 @@ Parameters (dynamic URL path):
 - ``team`` (``int``, ID of the team to delete)
 
 Returns ``204`` (no content) if successful, or a ``422`` error if not found (**not** a ``404`` error).
+
+Authentication-related endpoints
+================================
+
+``POST /auth/discord``
+----------------------
+
+Creates a session from a Discord user token (obtainable with Discord OAuth2).
+
+Parameters (JSON body):
+
+- ``token`` (``string``, the Discord token)
+
+Returns a ``Session`` object. If the token was valid but the account was not found, creates the account. Returns a ``401`` error if the token was invalid. Note that the token must be authorised for the ``identify`` scope.
+
+``POST /auth/create_session``
+-----------------------------------
+
+Parameters (JSON body):
+
+- ``account`` (``int``, the ID of the account to get)
+
+Returns a ``Session`` object, or a ``422`` error if the account was not found (**not** a ``404`` error).
+
+Requires the ``authenticate_users`` permission, which only apps can have.
+
+``POST /auth/reset_token``
+-------------------------
+
+Reset the token used to authenticate. Returns an ``App`` object with a token present if an app token was used to authenticate, or a ``Session`` object if a user token was used to authenticate.
+
+Returns a ``401`` error if no authentication was used.
+
+``GET /auth/me``
+----------------
+
+Returns either an ``App`` object (with no token present) or an ``Account`` object, depending on what token was used to authenticate.
+
+Returns a ``401`` error if no authentication was used.

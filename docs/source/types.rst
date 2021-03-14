@@ -7,9 +7,9 @@ Types of JSON object
 
 Attributes:
 
-- ``discord_id`` (``string``, representing an int)
-- ``display_name`` (``string``)
-- ``discriminator`` (``int``, 4 digit Discord discriminator)
+- ``id`` (``string``, representing an int)
+- ``name`` (``string``)
+- ``discriminator`` (``string``, 4 digit Discord discriminator)
 - ``avatar_url`` (optional ``string``, full URL to an avatar)
 - ``team`` (optional ``Team`` object)
 - ``permissions`` (``int``, see :doc:`/permissions`)
@@ -39,7 +39,7 @@ Attributes:
 
 Attributes:
 
-- ``display_name`` (``string``)
+- ``name`` (``string``)
 - ``permissions`` (``int``, see :doc:`/permissions`)
 - ``username`` (``string``, see :doc:`/authentication`)
 - ``password`` (``string``, see :doc:`/authentication`)

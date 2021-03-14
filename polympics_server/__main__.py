@@ -75,7 +75,7 @@ def app_converter(raw: str) -> App:
     try:
         app_id = int(raw)
     except ValueError:
-        query = App.display_name ** raw
+        query = App.name ** raw
     else:
         query = App.id == app_id
     app = App.get_or_none(query)
@@ -123,7 +123,7 @@ class AppsCli:
             permissions = (1 << len(PERMISSIONS)) - 1
         else:
             permissions = args.grant_permissions
-        app = App.create(display_name=args.name, permissions=permissions)
+        app = App.create(name=args.name, permissions=permissions)
         self.show_app(app)
 
     def edit_parser(self, subparsers: argparse._SubParsersAction):
@@ -180,7 +180,7 @@ class AppsCli:
     def list_apps(self, args: argparse.Namespace):
         """List all apps."""
         for app in App.select():
-            print(f'{app.id:>2}: {app.display_name}')
+            print(f'{app.id:>2}: {app.name}')
 
     def view_parser(self, subparsers: argparse._SubParsersAction):
         """Set up the parser for the app view command."""
@@ -203,7 +203,7 @@ class AppsCli:
                 permissions.append(permission)
         permissions = ','.join(permissions)
         print(
-            f'{app.id}: {app.display_name}\n\n'
+            f'{app.id}: {app.name}\n\n'
             f'Username: A{app.id}\n'
             f'Password: {app.token}\n'
             f'Permissions: {permissions}'

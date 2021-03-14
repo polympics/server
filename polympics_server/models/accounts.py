@@ -1,18 +1,21 @@
 """A model for a user account."""
+from __future__ import annotations
+
 from typing import Any
 
 import peewee
 
 from .database import BaseModel, db
 from .teams import Team
+from ..discord import DiscordUser
 
 
 class Account(BaseModel):
     """A user account."""
 
-    discord_id = peewee.BigIntegerField(primary_key=True)
-    display_name = peewee.CharField()
-    discriminator = peewee.IntegerField()
+    id = peewee.BigIntegerField(primary_key=True)
+    name = peewee.CharField()
+    discriminator = peewee.CharField()
     team = peewee.ForeignKeyField(
         Team, backref='members', null=True, on_delete='SET NULL'
     )
@@ -29,14 +32,27 @@ class Account(BaseModel):
     def as_dict(self) -> dict[str, Any]:
         """Get the account as a dict to be returned as JSON."""
         return {
-            'discord_id': str(self.discord_id),
-            'display_name': self.display_name,
+            'id': str(self.id),
+            'name': self.name,
             'discriminator': self.discriminator,
             'avatar_url': self.avatar_url,
             'team': self.team.as_dict() if self.team else None,
             'permissions': self.permissions,
             'created_at': self.created_at.timestamp()
         }
+
+    @classmethod
+    def get_or_create_by_user(cls, user: DiscordUser) -> Account:
+        """Get an account by ID or create one."""
+        account = cls.get_or_none(cls.id == user.id)
+        if account:
+            return account
+        return cls.create(
+            id=user.id,
+            name=user.name,
+            discriminator=user.discriminator,
+            avatar_url=user.avatar_url
+        )
 
 
 db.create_tables([Account])

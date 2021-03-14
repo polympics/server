@@ -33,13 +33,15 @@ Configuration goes in the same dir as this README, in a file named `config.json`
 | Field             | Default       | Description                                  |
 |:------------------|:--------------|:---------------------------------------------|
 | `debug`           | `false`       | Whether to run FastAPI in debug mode.        |
-| `max_session_age` | `"30m"`       | How long user auth sessions last.            |
+| `max_session_age` | `"30d"`       | How long user auth sessions last.            |
 | `db_name`         | `"polympics"` | The PostgreSQL database to connect to.       |
 | `db_user`         | `"polympics"` | The user to use to connect to the database.  |
 | `db_host`         | `"127.0.0.1"` | The host of the database to connect to.      |
 | `db_port`         | `5432`        | The port to connect to on the database host. |
 | `db_password`     | Required      | The password for the database.               |
 | `db_log_level`    | `"INFO"`      | The level of logs for Peewee to output.      |
+| `discord_api_url` | ``https://discord.com/api/v8`` | The URL of the Discord API. |
+| `discord_cdn_url` | ``https://cdn.discordapp.com`` | The URL of the Discord CDN. |
 
 ## CLI
 

@@ -15,6 +15,7 @@ fastapi = "*"
 psycopg2 = "*"
 "uvicorn[standard]" = "*"
 gunicorn = "*"
+aiohttp = "*"
 
 [dev-packages]
 flake8 = "*"

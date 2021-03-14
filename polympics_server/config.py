@@ -50,7 +50,7 @@ def get_timedelta(field: str, default: timedelta) -> timedelta:
 
 
 DEBUG = config.get('debug', False)
-MAX_SESSION_AGE = config.get('max_session_age', timedelta(minutes=30))
+MAX_SESSION_AGE = config.get('max_session_age', timedelta(days=30))
 ALLOWED_ORIGINS = config.get('allowed_origins', [])
 
 DB_NAME = config.get('db_name', 'polympics')
@@ -59,3 +59,6 @@ DB_HOST = config.get('db_host', '127.0.0.1')
 DB_PORT = config.get('db_port', 5432)
 DB_PASSWORD = config['db_password']
 DB_LOG_LEVEL = get_log_level('db_log_level', logging.INFO)
+
+DISCORD_API_URL = config.get('discord_api_url', 'https://discord.com/api/v8')
+DISCORD_CDN_URL = config.get('discord_cdn_url', 'https://cdn.discordapp.com')
