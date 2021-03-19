@@ -229,6 +229,8 @@ These are marked with <code class="docutils literal notranslate"><span class="pr
 <li><p><code class="docutils literal notranslate"><span class="pre">grant_permissions</span></code> (optional <code class="docutils literal notranslate"><span class="pre">int</span></code>, permissions to grant the user)</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">revoke_permissions</span></code> (optional <code class="docutils literal notranslate"><span class="pre">int</span></code>, permissions to revoke from the user)</p></li>
 </ul>
+<p>Note that <code class="docutils literal notranslate"><span class="pre">team</span></code> can also be <code class="docutils literal notranslate"><span class="pre">0</span></code>, which indicates that the user should be
+removed from their team.</p>
 <p>Returns a <code class="docutils literal notranslate"><span class="pre">422</span></code> error if the account was not found (<strong>not</strong> a <code class="docutils literal notranslate"><span class="pre">404</span></code> error).</p>
 <p>Returns an <code class="docutils literal notranslate"><span class="pre">Account</span></code> object if successful.</p>
 <p>Different parameters require different permissions:</p>
@@ -263,8 +265,9 @@ These are marked with <code class="docutils literal notranslate"><span class="pr
 </tr>
 </tbody>
 </table>
-<p><sup>*1</sup> You can also add a user to a team if you are a
-member of that team and have the <code class="docutils literal notranslate"><span class="pre">manage_own_team</span></code> permission.</p>
+<p><sup>*1</sup> You can also remove a user from a team if you are a
+member of that team and have the <code class="docutils literal notranslate"><span class="pre">manage_own_team</span></code> permission. You can
+also add yourself to a team.</p>
 </div>
 <div class="section" id="get-account-account">
 <h3><code class="docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/account/{account}</span></code><a class="headerlink" href="#get-account-account" title="Permalink to this headline">¶</a></h3>
