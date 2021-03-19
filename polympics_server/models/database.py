@@ -35,8 +35,12 @@ class BaseModel(peewee.Model):
         yield cls.convert
 
     @classmethod
-    def convert(cls, model_id: int) -> BaseModel:
+    def convert(cls, model_id: str) -> BaseModel:
         """Get a model from an ID, or raise ValueError."""
+        try:
+            model_id = int(model_id)
+        except ValueError:
+            raise ValueError(f'Invalid {cls.__name__} ID: must be int.')
         try:
             return cls.get_by_id(model_id)
         except peewee.DoesNotExist:
