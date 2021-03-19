@@ -1,5 +1,5 @@
 """Account creation, viewing and editing."""
-from typing import Any, Optional
+from typing import Any, Optional, Union
 
 from fastapi import Depends, HTTPException, Response
 
@@ -8,7 +8,7 @@ import peewee
 from pydantic import BaseModel
 
 from .utils import Paginate, auth_assert, authenticate, server
-from ..models import Account, Scope, Team
+from ..models import Account, ExplicitNone, Scope, Team
 
 
 class SignupForm(BaseModel):
@@ -28,7 +28,7 @@ class AccountEditForm(BaseModel):
     name: Optional[str] = None
     discriminator: Optional[int] = None
     avatar_url: Optional[str] = None
-    team: Optional[Team] = None
+    team: Optional[Union[Team, ExplicitNone]] = None
     grant_permissions: Optional[int] = None
     revoke_permissions: Optional[int] = None
 
@@ -82,7 +82,15 @@ async def update_account(
         auth_assert(scope.manage_account_details)
         account.avatar_url = data.avatar_url
     if data.team:
-        auth_assert(scope.manage_account_teams or scope.owns_team(data.team))
+        if isinstance(data.team, ExplicitNone):
+            data.team = None
+        kicking = (
+            account.team
+            and scope.owns_team(account.team)
+            and data.team is None
+        )
+        joining = scope.account and scope.account.id == account.id
+        auth_assert(scope.manage_account_teams or kicking or joining)
         account.team = data.team
     if data.grant_permissions:
         auth_assert(scope.can_alter_permissions(

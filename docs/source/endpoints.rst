@@ -56,6 +56,9 @@ Parameters (JSON body):
 - ``grant_permissions`` (optional ``int``, permissions to grant the user)
 - ``revoke_permissions`` (optional ``int``, permissions to revoke from the user)
 
+Note that ``team`` can also be ``0``, which indicates that the user should be
+removed from their team.
+
 Returns a ``422`` error if the account was not found (**not** a ``404`` error).
 
 Returns an ``Account`` object if successful.
@@ -73,8 +76,9 @@ Parameter              Permission
 ``revoke_permissions`` See :doc:`/permissions`
 ====================== ===========================================
 
-:superscript:`\*1` You can also add a user to a team if you are a
-member of that team and have the ``manage_own_team`` permission.
+:superscript:`\*1` You can also remove a user from a team if you are a
+member of that team and have the ``manage_own_team`` permission. You can
+also add yourself to a team.
 
 ``GET /account/{account}``
 --------------------------

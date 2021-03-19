@@ -18,6 +18,35 @@ db = peewee.PostgresqlDatabase(
 )
 
 
+class ExplicitNone:
+    """Pydantic type that only matches the integer 0.
+
+    This should be used in a Union, before a model class.
+    """
+
+    @classmethod
+    def __get_validators__(cls) -> Iterable[Callable]:
+        """Get pydantic validators."""
+        yield cls.convert
+
+    @classmethod
+    def convert(cls, model_id: str) -> ExplicitNone:
+        """Return an instance if the ID passed is 0."""
+        # Still convert to int, so we catch things like `0.0`.
+        try:
+            model_id = int(model_id)
+        except ValueError:
+            raise ValueError('Invalid ID: must be int.')
+        if model_id == 0:
+            return ExplicitNone()
+        raise ValueError('Should fall through to next type.')
+
+    @classmethod
+    def __modify_schema__(cls, field_schema: dict[str, Any]):
+        """Modify the pydantic schema for this data type."""
+        field_schema.update(pattern='^0$', examples=[0])
+
+
 class BaseModel(peewee.Model):
     """Base model to set default settings."""
 
