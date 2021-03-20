@@ -1,15 +1,16 @@
 """Command line interface for managing the server."""
-import argparse
+from __future__ import annotations
+
 import importlib
 import os
 import sys
 from datetime import datetime
-from typing import Callable
 
 from playhouse.migrate import PostgresqlMigrator
 
+from .cli_parser import Argument, CommandGroup, command, parse
 from .config import BASE_PATH
-from .models import App, Session, db
+from .models import Account, App, Session, db
 
 
 PERMISSIONS = [
@@ -21,6 +22,12 @@ MIGRATIONS = [
     os.listdir(BASE_PATH / 'polympics_server' / 'migrations')
     if file_name.endswith('.py')
 ]
+
+
+def error(description: str):
+    """Print an error to stderr and exit."""
+    print(description, file=sys.stderr)
+    sys.exit(1)
 
 
 def get_migration_by_id(migration_id: int) -> str:
@@ -54,8 +61,7 @@ def migration_converter(raw_name: str) -> str:
         else:
             return get_migration_by_name(raw_name)
     except ValueError as e:
-        print(e, file=sys.stderr)
-        sys.exit(1)
+        error(e)
 
 
 def permission_list(raw: str) -> int:
@@ -65,8 +71,7 @@ def permission_list(raw: str) -> int:
         try:
             value |= 1 << PERMISSIONS.index(raw_permission)
         except ValueError:
-            print(f'Unknown permission "{raw_permission}".', file=sys.stderr)
-            sys.exit(1)
+            error(f'Unknown permission "{raw_permission}".')
     return value
 
 
@@ -80,196 +85,134 @@ def app_converter(raw: str) -> App:
         query = App.id == app_id
     app = App.get_or_none(query)
     if not app:
-        print(f'Could not find app by name or ID "{raw}".', file=sys.stderr)
-        sys.exit(1)
+        error(f'Could not find app by name or ID "{raw}".')
     return app
 
 
-class AppsCli:
-    """CLI parser for app-related commands."""
+def account_converter(raw: str) -> App:
+    """Find an account by ID."""
+    try:
+        account_id = int(raw)
+    except ValueError:
+        error(f'Invalid ID "{raw}": must be an int.')
+    account = Account.get_or_none(Account.id == account_id)
+    if not account:
+        error(f'Could not find account by ID "{raw}".')
+    return account
 
-    def __init__(self, subparsers: argparse._SubParsersAction):
-        """Set up the parsers for app-related commands."""
-        parser = subparsers.add_parser(
-            'apps',
-            description='Commands for creating, viewing and editing apps.'
-        )
-        subsubparsers = parser.add_subparsers(
-            dest='subcommand', required=True
-        )
-        self.commands = {}
-        for parser in (
-                self.create_parser, self.edit_parser, self.delete_parser,
-                self.list_parser, self.view_parser):
-            parser(subsubparsers)
 
-    def create_parser(self, subparsers: argparse._SubParsersAction):
-        """Set up the parser for the app create command."""
-        self.commands['create'] = self.create
-        parser = subparsers.add_parser('create', description='Create an app.')
-        parser.add_argument('name', help='The name for the new app.')
-        parser.add_argument(
+AppArgument = Argument(
+    'app', type=app_converter, help='The name or ID of the app.'
+)
+
+
+def show_app(app: App):
+    """Display an app on stdout."""
+    permissions = []
+    for n, permission in enumerate(PERMISSIONS):
+        if app.permissions & (1 << n):
+            permissions.append(permission)
+    permissions = ','.join(permissions)
+    print(
+        f'{app.id}: {app.name}\n\n'
+        f'Username: A{app.id}\n'
+        f'Password: {app.token}\n'
+        f'Permissions: {permissions}'
+    )
+
+
+class Apps(CommandGroup):
+    """Commands for creating, viewing and editing apps."""
+
+    @command(
+        Argument('name', help='The name for the new app.'),
+        Argument(
             '-g', '--grant-permissions', type=permission_list, default=0,
             help='Permissions to grant to the new app.'
-        )
-        parser.add_argument(
+        ),
+        Argument(
             '-a', '--all-permissions', action='store_true',
             help='Grant all permissions to the new app.'
         )
-
-    def create(self, args: argparse.Namespace):
+    )
+    def create(
+            name: str, grant_permissions: int, all_permissions: bool):
         """Create an app."""
-        if args.all_permissions:
+        if all_permissions:
             permissions = (1 << len(PERMISSIONS)) - 1
         else:
-            permissions = args.grant_permissions
-        app = App.create(name=args.name, permissions=permissions)
-        self.show_app(app)
+            permissions = grant_permissions
+        app = App.create(name=name, permissions=permissions)
+        show_app(app)
 
-    def edit_parser(self, subparsers: argparse._SubParsersAction):
-        """Set up the parser for the app edit command."""
-        self.commands['edit'] = self.edit
-        parser = subparsers.add_parser('edit', description='Edit an app.')
-        parser.add_argument(
-            'app', type=app_converter,
-            help='The name or ID of the app.'
-        )
-        parser.add_argument(
+    @command(
+        AppArgument,
+        Argument(
             '-t', '--reset-token', action='store_true',
             help='Reset the app\'s token.'
-        )
-        parser.add_argument(
+        ),
+        Argument(
             '-g', '--grant-permissions', type=permission_list, default=0,
             help='Permissions to grant to the app.'
-        )
-        parser.add_argument(
+        ),
+        Argument(
             '-r', '--revoke-permissions', type=permission_list, default=0,
             help='Permissions to revoke from the app.'
-        )
-        parser.add_argument('-n', '--name', help='A new name for the app.')
-
-    def edit(self, args: argparse.Namespace):
+        ),
+        Argument('-n', '--name', help='A new name for the app.')
+    )
+    def edit(
+            app: App, grant_permissions: int, revoke_permissions: int,
+            name: str, reset_token: bool):
         """Edit an app."""
-        args.app.permissions |= args.grant_permissions
-        args.app.permissions &= ~args.revoke_permissions
-        if args.name:
-            args.app.name = args.name
-        if args.reset_token:
-            args.app.reset_token()
-        args.app.save()
-        self.show_app(args.app)
+        app.permissions |= grant_permissions
+        app.permissions &= ~revoke_permissions
+        if name:
+            app.name = name
+        if reset_token:
+            app.reset_token()
+        app.save()
+        show_app(app)
 
-    def delete_parser(self, subparsers: argparse._SubParsersAction):
-        """Set up the parser for the app delete command."""
-        self.commands['delete'] = self.delete
-        parser = subparsers.add_parser('delete', description='Delete an app.')
-        parser.add_argument(
-            'app', type=app_converter,
-            help='The name or ID of the app.'
-        )
-
-    def delete(self, args: argparse.Namespace):
+    @command(AppArgument)
+    def delete(app: App):
         """Delete an app."""
-        args.app.delete_instance()
+        app.delete_instance()
 
-    def list_parser(self, subparsers: argparse._SubParsersAction):
-        """Set up the parser for the app list command."""
-        self.commands['list'] = self.list_apps
-        subparsers.add_parser('list', description='List all apps.')
-
-    def list_apps(self, args: argparse.Namespace):
+    @command(name='list')
+    def list_apps():
         """List all apps."""
         for app in App.select():
             print(f'{app.id:>2}: {app.name}')
 
-    def view_parser(self, subparsers: argparse._SubParsersAction):
-        """Set up the parser for the app view command."""
-        self.commands['view'] = self.view
-        parser = subparsers.add_parser('view', description='View an app.')
-        parser.add_argument(
-            'app', type=app_converter,
-            help='The name or ID of the app.'
-        )
-
-    def view(self, args: argparse.Namespace):
-        """Command to view an app."""
-        self.show_app(args.app)
-
-    def show_app(self, app: App):
-        """Show an app on stdout."""
-        permissions = []
-        for n, permission in enumerate(PERMISSIONS):
-            if app.permissions & (1 << n):
-                permissions.append(permission)
-        permissions = ','.join(permissions)
-        print(
-            f'{app.id}: {app.name}\n\n'
-            f'Username: A{app.id}\n'
-            f'Password: {app.token}\n'
-            f'Permissions: {permissions}'
-        )
+    @command(AppArgument)
+    def view(app: App):
+        """View an app."""
+        show_app(app)
 
 
-class SessionsCli:
-    """CLI parser for session-related commands."""
+class Sessions(CommandGroup):
+    """Commands for managing user auth sessions."""
 
-    def __init__(self, subparsers: argparse._SubParsersAction):
-        """Set up the parsers for session-related commands."""
-        parser = subparsers.add_parser(
-            'sessions',
-            description='Commands for managing user auth sessions.'
-        )
-        subsubparsers = parser.add_subparsers(
-            dest='subcommand', required=True
-        )
-        self.commands = {}
-        self.prune_parser(subsubparsers)
-
-    def prune_parser(self, subparsers: argparse._SubParsersAction):
-        """Set up the parser for the session prune command."""
-        self.commands['prune'] = self.prune
-        subparsers.add_parser(
-            'prune', description='Delete expired sessions.'
-        )
-
-    def prune(self, args: argparse.Namespace):
+    @command()
+    def prune():
         """Delete all expired sessions."""
         q = Session.delete().where(Session.expires_at < datetime.now())
         count = q.execute()
         print(f'Deleted {count} expired sessions.')
 
 
-class MigrationsCli:
-    """CLI parser for managing database migrations."""
+class Migrations(CommandGroup):
+    """Commands for managing database migrations."""
 
-    def __init__(self, subparsers: argparse._SubParsersAction):
-        """Set up the parsers for migration commands."""
-        parser = subparsers.add_parser(
-            'migrations',
-            description='Commands for managing database migrations.'
-        )
-        subsubparsers = parser.add_subparsers(
-            dest='subcommand', required=True
-        )
-        self.commands = {}
-        for parser in (self.apply_parser, self.list_parser):
-            parser(subsubparsers)
-
-    def apply_parser(self, subparsers: argparse._SubParsersAction):
-        """Set up the parser for the migrations apply command."""
-        self.commands['apply'] = self.apply
-        parser = subparsers.add_parser(
-            'apply', description='Apply specified migrations.'
-        )
-        parser.add_argument(
-            'migrations', type=migration_converter, nargs='*',
-            help='The migrations to apply.'
-        )
-
-    def apply(self, args: argparse.Namespace):
+    @command(Argument(
+        'migrations', type=migration_converter, nargs='*',
+        help='The migrations to apply.'
+    ))
+    def apply(migrations: list[str]):
         """Apply specified migrations."""
         migrator = PostgresqlMigrator(db)
-        for migration in args.migrations:
+        for migration in migrations:
             print('Applying migration', migration, end='... ')
             module = importlib.import_module(
                 '.migrations.' + migration, 'polympics_server'
@@ -278,14 +221,8 @@ class MigrationsCli:
             print('Done')
         print('All migrations successful.')
 
-    def list_parser(self, subparsers: argparse._SubParsersAction):
-        """Set up the parser for the migrations list command."""
-        self.commands['list'] = self.list_migrations
-        subparsers.add_parser(
-            'list', description='List available migrations.'
-        )
-
-    def list_migrations(self, args: argparse.Namespace):
+    @command()
+    def list_migrations():
         """List available migrations."""
         print('You can specify a migration by name or ID:\n')
         for migration in MIGRATIONS:
@@ -295,29 +232,24 @@ class MigrationsCli:
             print(f'{number:>3}: {name}')
 
 
-def parse_commands(
-        args: argparse.Namespace,
-        commands: dict[str, dict[str, Callable]]):
-    """Execute the parsed commands."""
-    command = commands[args.command][args.subcommand]
-    command(args)
+class Users(CommandGroup):
+    """Commands for managing user accounts."""
+
+    @command(Argument(
+        'account', type=account_converter, help='The ID of the account.'
+    ))
+    def superuser(account: Account):
+        """Grant an account every permission."""
+        account.manage_permissions = True
+        account.manage_account_teams = True
+        account.manage_account_details = True
+        account.manage_teams = True
+        account.manage_own_team = True
+        account.save()
+        print(
+            f'Made account {account.id} ({account.name}#'
+            f'{account.discriminator}) a superuser.'
+        )
 
 
-def root_parser():
-    """Parse and execute the command line args."""
-    parser = argparse.ArgumentParser(
-        description='Tools for managing the database and API.'
-    )
-    subparsers = parser.add_subparsers(dest='command', required=True)
-    apps_cli = AppsCli(subparsers)
-    sessions_cli = SessionsCli(subparsers)
-    migrations_cli = MigrationsCli(subparsers)
-    commands = {
-        'apps': apps_cli.commands,
-        'sessions': sessions_cli.commands,
-        'migrations': migrations_cli.commands
-    }
-    parse_commands(parser.parse_args(), commands)
-
-
-root_parser()
+parse()
