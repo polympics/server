@@ -138,11 +138,15 @@ class Scope:
     manage_own_team: bool = False
     authenticate_users: bool = False
 
+    def owns_account(self, account: Account) -> bool:
+        """Check if the scope is for a given account."""
+        return self.account and self.account.id == account.id
+
     def owns_team(self, team: Team) -> bool:
         """Check if the scope is for an account that owns a given team."""
         return (
             self.account
-            and self.account.team == team
+            and self.account.team.id == team.id
             and self.account.manage_own_team
         )
 

@@ -116,6 +116,6 @@ async def get_account(account: Account) -> dict[str, Any]:
 async def delete_account(
         account: Account, scope: Scope = Depends(authenticate)) -> Response:
     """Delete an account."""
-    auth_assert(scope.manage_account_details)
+    auth_assert(scope.manage_account_details or scope.owns_account(account))
     account.delete_instance()
     return Response(status_code=204)

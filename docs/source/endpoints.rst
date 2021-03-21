@@ -102,7 +102,7 @@ Returns ``204`` (no content) if successful.
 
 Returns a ``422`` error if the account was not found (**not** a ``404`` error).
 
-Requires the ``manage_account_details`` permission.
+Requires the ``manage_account_details`` permission, or being authenticated for this account.
 
 Team-related endpoints
 ======================
