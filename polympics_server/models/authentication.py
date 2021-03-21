@@ -160,8 +160,9 @@ class Scope:
                 self.manage_account_details, self.manage_teams,
                 self.authenticate_users, self.manage_own_team)):
             if not self_has_perm:
-                if permissions & (1 << n):
-                    # Can't grant permissions you don't have.
+                if (permissions & (1 << n)) and n != 5:
+                    # Can't grant permissions you don't have, except
+                    # manage_own_team if you have manage_team.
                     return False
         if not self.manage_permissions:
             if self.manage_own_team and team == self.account.team:
