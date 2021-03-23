@@ -27,7 +27,7 @@ class AccountEditForm(BaseModel):
     """A form for editing an account."""
 
     name: Optional[str] = None
-    discriminator: Optional[int] = None
+    discriminator: Optional[str] = None
     avatar_url: Optional[str] = None
     team: Optional[Union[Team, ExplicitNone]] = None
     grant_permissions: Optional[int] = None
@@ -78,7 +78,7 @@ async def update_account(
         auth_assert(scope.manage_account_details)
         account.name = data.name
     if data.discriminator:
-        auth_assert(scope.manage_account_teams)
+        auth_assert(scope.manage_account_details)
         account.discriminator = data.discriminator
     if data.avatar_url:
         auth_assert(scope.manage_account_details)
