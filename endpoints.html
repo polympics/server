@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>List of API endpoints &mdash; Polympics API Server 0.3.3 documentation</title>
+  <title>List of API endpoints &mdash; Polympics API Server 0.3.4 documentation</title>
   
 
   
@@ -228,10 +228,12 @@ These are marked with <code class="docutils literal notranslate"><span class="pr
 <li><p><code class="docutils literal notranslate"><span class="pre">team</span></code> (optional <code class="docutils literal notranslate"><span class="pre">int</span></code>, the ID of the team to move the user to)</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">grant_permissions</span></code> (optional <code class="docutils literal notranslate"><span class="pre">int</span></code>, permissions to grant the user)</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">revoke_permissions</span></code> (optional <code class="docutils literal notranslate"><span class="pre">int</span></code>, permissions to revoke from the user)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">discord_token</span></code> (optional <code class="docutils literal notranslate"><span class="pre">string</span></code>, Discord token to fetch user data from)</p></li>
 </ul>
 <p>Note that <code class="docutils literal notranslate"><span class="pre">team</span></code> can also be <code class="docutils literal notranslate"><span class="pre">0</span></code>, which indicates that the user should be
 removed from their team.</p>
 <p>Returns a <code class="docutils literal notranslate"><span class="pre">422</span></code> error if the account was not found (<strong>not</strong> a <code class="docutils literal notranslate"><span class="pre">404</span></code> error).</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">discord_token</span></code> was passed but was invalid or didn’t have the <code class="docutils literal notranslate"><span class="pre">indentify</span></code> scope, a <code class="docutils literal notranslate"><span class="pre">422</span></code> error is returned. If the token was valid but was for the wrong account ID, a <code class="docutils literal notranslate"><span class="pre">403</span></code> error is returned.</p>
 <p>Returns an <code class="docutils literal notranslate"><span class="pre">Account</span></code> object if successful.</p>
 <p>Different parameters require different permissions:</p>
 <table class="docutils align-default">
@@ -262,6 +264,9 @@ removed from their team.</p>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">revoke_permissions</span></code></p></td>
 <td><p>See <a class="reference internal" href="permissions.html"><span class="doc">Permissions</span></a></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">discord_token</span></code></p></td>
+<td><p>None</p></td>
 </tr>
 </tbody>
 </table>

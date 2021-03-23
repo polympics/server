@@ -55,11 +55,14 @@ Parameters (JSON body):
 - ``team`` (optional ``int``, the ID of the team to move the user to)
 - ``grant_permissions`` (optional ``int``, permissions to grant the user)
 - ``revoke_permissions`` (optional ``int``, permissions to revoke from the user)
+- ``discord_token`` (optional ``string``, Discord token to fetch user data from)
 
 Note that ``team`` can also be ``0``, which indicates that the user should be
 removed from their team.
 
 Returns a ``422`` error if the account was not found (**not** a ``404`` error).
+
+If ``discord_token`` was passed but was invalid or didn't have the ``indentify`` scope, a ``422`` error is returned. If the token was valid but was for the wrong account ID, a ``403`` error is returned.
 
 Returns an ``Account`` object if successful.
 
@@ -74,6 +77,7 @@ Parameter              Permission
 ``team``               ``manage_account_teams`` :superscript:`\*1`
 ``grant_permissions``  See :doc:`/permissions`
 ``revoke_permissions`` See :doc:`/permissions`
+``discord_token``      None
 ====================== ===========================================
 
 :superscript:`\*1` You can also remove a user from a team if you are a
