@@ -8,6 +8,7 @@ import peewee
 from pydantic import BaseModel
 
 from .utils import Paginate, auth_assert, authenticate, server
+from .. import discord
 from ..models import Account, ExplicitNone, Scope, Team
 
 
@@ -31,6 +32,7 @@ class AccountEditForm(BaseModel):
     team: Optional[Union[Team, ExplicitNone]] = None
     grant_permissions: Optional[int] = None
     revoke_permissions: Optional[int] = None
+    discord_token: Optional[str] = None
 
 
 @server.post('/accounts/new', status_code=201)
@@ -102,6 +104,18 @@ async def update_account(
             account, data.revoke_permissions
         ))
         account.permissions &= ~data.revoke_permissions
+    if data.discord_token:
+        try:
+            user_data = await discord.get_user(data.token)
+        except ValueError:
+            raise HTTPException(422, 'Bad Discord user token.')
+        if user_data.id != account.id:
+            raise HTTPException(
+                403, 'Discord token is for a different account.'
+            )
+        account.name = user_data.name
+        account.discriminator = user_data.discriminator
+        account.avatar_url = user_data.avatar_url
     account.save()
     return account.as_dict()
 

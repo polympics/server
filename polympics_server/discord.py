@@ -18,7 +18,7 @@ AVATAR_URL = f'{DISCORD_CDN_URL}/avatars/{{id}}/{{hash}}.png'
 class DiscordUser:
     """Data on a Discord user from the Discord API."""
 
-    id: int
+    id: str
     name: str
     avatar_url: str
     discriminator: str

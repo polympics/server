@@ -70,6 +70,6 @@ $ python -m polympics_server apps edit --help
 
 ## API
 
-To see automatically generated docs, run the server as described above and visit http://127.0.0.1:8000/docs or http://127.0.0.1:8000/redoc.
+[Docs are available here](https://polympics.github.io/server).
 
-TODO: Better docs, document pagination and authentication.
+There are also automatically generated docs available: run the server as described above and visit http://127.0.0.1:8000/docs or http://127.0.0.1:8000/redoc.
