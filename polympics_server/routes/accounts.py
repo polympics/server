@@ -17,7 +17,7 @@ class SignupForm(BaseModel):
 
     id: int
     name: str
-    discriminator: int
+    discriminator: str
     avatar_url: Optional[str] = None
     team: Optional[Team] = None
     permissions: int = 0
@@ -106,7 +106,7 @@ async def update_account(
         account.permissions &= ~data.revoke_permissions
     if data.discord_token:
         try:
-            user_data = await discord.get_user(data.token)
+            user_data = await discord.get_user(data.discord_token)
         except ValueError:
             raise HTTPException(422, 'Bad Discord user token.')
         if user_data.id != account.id:
