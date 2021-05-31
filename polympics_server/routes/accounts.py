@@ -35,7 +35,7 @@ class AccountEditForm(BaseModel):
     discord_token: Optional[str] = None
 
 
-@server.post('/accounts/new', status_code=201)
+@server.post('/accounts/new', status_code=201, tags=['accounts'])
 async def signup(
         data: SignupForm,
         scope: Scope = Depends(authenticate)) -> dict[str, Any]:
@@ -54,7 +54,7 @@ async def signup(
     return account.as_dict()
 
 
-@server.get('/accounts/search')
+@server.get('/accounts/search', tags=['accounts'])
 async def search_for_account(
         q: str = None, team: Team = None,
         paginate: Paginate = Depends(Paginate)) -> list[dict[str, Any]]:
@@ -69,7 +69,7 @@ async def search_for_account(
     return paginate(query)
 
 
-@server.patch('/account/{account}')
+@server.patch('/account/{account}', tags=['accounts'])
 async def update_account(
         account: Account, data: AccountEditForm,
         scope: Scope = Depends(authenticate)) -> Response:
@@ -120,13 +120,13 @@ async def update_account(
     return account.as_dict()
 
 
-@server.get('/account/{account}')
+@server.get('/account/{account}', tags=['accounts'])
 async def get_account(account: Account) -> dict[str, Any]:
     """Get an account by ID."""
     return account.as_dict()
 
 
-@server.delete('/account/{account}', status_code=204)
+@server.delete('/account/{account}', status_code=204, tags=['accounts'])
 async def delete_account(
         account: Account, scope: Scope = Depends(authenticate)) -> Response:
     """Delete an account."""

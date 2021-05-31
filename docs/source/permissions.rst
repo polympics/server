@@ -15,6 +15,7 @@ manage_account_details Create, edit and delete accounts.
 manage_teams           Create, edit and delete teams.
 authenticate_users     Create authentication sessions for users (app-only).
 manage_own_team        Manage the team to which you belong (user-only).
+manage_awards          Create, edit and delete awards.
 ====================== =======================================================
 
 :superscript:`\*1`

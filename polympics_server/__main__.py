@@ -245,6 +245,7 @@ class Users(CommandGroup):
         account.manage_account_details = True
         account.manage_teams = True
         account.manage_own_team = True
+        account.manage_awards = True
         account.save()
         print(
             f'Made account {account.id} ({account.name}#'

@@ -15,7 +15,7 @@ class TeamData(BaseModel):
     name: str
 
 
-@server.post('/teams/new', status_code=201)
+@server.post('/teams/new', status_code=201, tags=['teams'])
 async def create_team(
         data: TeamData,
         scope: Scope = Depends(authenticate)) -> dict[str, Any]:
@@ -25,7 +25,7 @@ async def create_team(
     return team.as_dict()
 
 
-@server.get('/teams/search')
+@server.get('/teams/search', tags=['teams'])
 async def all_teams(
         q: str = None,
         paginate: Paginate = Depends(Paginate)) -> list[dict[str, Any]]:
@@ -36,13 +36,13 @@ async def all_teams(
     return paginate(query)
 
 
-@server.get('/team/{team}')
+@server.get('/team/{team}', tags=['teams'])
 async def get_team(team: Team) -> dict[str, Any]:
     """Get a team by ID."""
     return team.as_dict()
 
 
-@server.patch('/team/{team}')
+@server.patch('/team/{team}', tags=['teams'])
 async def edit_team(
         team: Team, data: TeamData,
         scope: Scope = Depends(authenticate)) -> Response:
@@ -53,7 +53,7 @@ async def edit_team(
     return team.as_dict()
 
 
-@server.delete('/team/{team}', status_code=204)
+@server.delete('/team/{team}', status_code=204, tags=['teams'])
 async def delete_team(
         team: Team, scope: Scope = Depends(authenticate)) -> Response:
     """Delete a team."""

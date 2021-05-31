@@ -163,6 +163,88 @@ Parameters (dynamic URL path):
 
 Returns ``204`` (no content) if successful, or a ``422`` error if not found (**not** a ``404`` error).
 
+Award-related endpoints
+=======================
+
+``POST /awards/new``
+--------------------
+
+Creates a new award. An award is given to a selection of users but also to their team. Requires the ``manage_awards`` permission.
+
+Parameters (JSON body):
+
+- ``title`` (``string``)
+- ``image_url`` (``string``)
+- ``team`` (``int``, the ID of a team)
+- ``accounts`` (``list``of ``int`` s, the IDs of accounts)
+
+``team`` *should* (but is not required to) refer to a team that all the ``accounts`` are part of.
+
+Returns an ``Award`` object.
+
+``PATCH /awards/{award}``
+-------------------------
+
+Updates an existing award. Requires the ``manage_awards`` permission.
+
+Parameters (dynamic URL path):
+
+- ``award`` (``int``, the ID of the award to edit)
+
+Parameters (JSON body):
+
+- ``title`` (optional ``string``)
+- ``image_url`` (optional ``string``)
+- ``team`` (optional ``int``, the ID of a team)
+
+Returns an ``Award`` object, or a ``422`` error if not found (**not** a ``404`` error).
+
+``GET /awards/{award}``
+-----------------------
+
+Get the details of an award.
+
+Parameters (dynamic URL path):
+
+- ``award`` (``int``, the ID of the award to get)
+
+Returns an ``Award`` object, or a ``422`` error if not found (**not** a ``404`` error).
+
+``DELETE /awards/{award}``
+--------------------------
+
+Remove an award. Requires the ``manage_awards`` permission.
+
+Parameters (dynamic URL path):
+
+- ``award`` (``int``, the ID of the award to delete)
+
+Returns ``204`` (no content) if successful, or a ``422`` error if not found (**not** a ``404`` error).
+
+``PUT /account/{account}/award/{award}``
+----------------------------------------
+
+Give an existing award to a new user. Requires the ``manage_awards`` permission.
+
+Parameters (dynamic URL path):
+
+- ``account`` (``int``, the ID of the account to assign the award to)
+- ``award`` (``int``, the ID of the award to assign)
+
+Returns ``201`` with no content if successful, ``208`` if the user already had the award, or ``422`` if the user or award was not found.
+
+``DELETE /account/{account}/award/{award}``
+-------------------------------------------
+
+Remove an award from a user. Requires the ``manage_awards`` permission.
+
+Parameters (dynamic URL path):
+
+- ``account`` (``int``, the ID of the account to remove the award from)
+- ``award`` (``int``, the ID of the award to remove)
+
+Returns ``204`` (no content) if successful, ``404`` if the user did not have the award, or ``422`` if the user or award was not found.
+
 Authentication-related endpoints
 ================================
 
@@ -189,7 +271,7 @@ Returns a ``Session`` object, or a ``422`` error if the account was not found (*
 Requires the ``authenticate_users`` permission, which only apps can have.
 
 ``POST /auth/reset_token``
--------------------------
+--------------------------
 
 Reset the token used to authenticate. Returns an ``App`` object with a token present if an app token was used to authenticate, or a ``Session`` object if a user token was used to authenticate.
 

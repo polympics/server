@@ -14,6 +14,7 @@ Attributes:
 - ``team`` (optional ``Team`` object)
 - ``permissions`` (``int``, see :doc:`/permissions`)
 - ``created_at`` (``decimal``, seconds since the UNIX epoch)
+- ``awards`` (``list`` of ``Award`` objects)
 
 ``Team``
 --------
@@ -24,6 +25,15 @@ Attributes:
 - ``name`` (``string``)
 - ``created_at`` (``decimal``, seconds since the UNIX epoch)
 - ``member_count`` (``int``)
+
+``Award``
+---------
+
+Attributes:
+
+- ``id`` (``int``)
+- ``title`` (``string``)
+- ``image_url`` (``string``)
 
 ``Session``
 -----------

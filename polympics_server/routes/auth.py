@@ -22,7 +22,7 @@ class SessionData(BaseModel):
     account: Account
 
 
-@server.post('/auth/create_session', status_code=201)
+@server.post('/auth/create_session', status_code=201, tags=['auth'])
 async def create_session(
         data: SessionData,
         scope: Scope = Depends(authenticate)) -> dict[str, Any]:
@@ -32,7 +32,7 @@ async def create_session(
     return session.as_dict()
 
 
-@server.post('/auth/reset_token')
+@server.post('/auth/reset_token', tags=['auth'])
 async def reset_token(scope: Scope = Depends(authenticate)) -> dict[str, Any]:
     """Reset the token used to authenticate."""
     if scope.app:
@@ -46,7 +46,7 @@ async def reset_token(scope: Scope = Depends(authenticate)) -> dict[str, Any]:
     raise HTTPException(401, 'A token was not used to authenticate.')
 
 
-@server.get('/auth/me')
+@server.get('/auth/me', tags=['auth'])
 async def get_app(scope: Scope = Depends(authenticate)) -> dict[str, Any]:
     """Get metadata on the authenticated app."""
     if scope.app:
@@ -56,7 +56,7 @@ async def get_app(scope: Scope = Depends(authenticate)) -> dict[str, Any]:
     raise HTTPException(401, 'A token was not used to authenticate.')
 
 
-@server.post('/auth/discord')
+@server.post('/auth/discord', tags=['auth'])
 async def discord_authorise(data: DiscordAuthData) -> dict[str, Any]:
     """Create a user session using a Discord user auth token."""
     try:

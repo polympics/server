@@ -5,6 +5,7 @@ from typing import Any
 
 import peewee
 
+from . import awards
 from .database import BaseModel, db
 from .teams import Team
 from ..discord import DiscordUser
@@ -28,6 +29,7 @@ class Account(BaseModel):
     manage_teams = permissions.flag(1 << 3)
     # 1 << 4 is used for a different purpose by app permissions.
     manage_own_team = permissions.flag(1 << 5)
+    manage_awards = permissions.flag(1 << 6)
 
     def as_dict(self) -> dict[str, Any]:
         """Get the account as a dict to be returned as JSON."""
@@ -38,7 +40,8 @@ class Account(BaseModel):
             'avatar_url': self.avatar_url,
             'team': self.team.as_dict() if self.team else None,
             'permissions': self.permissions,
-            'created_at': self.created_at.timestamp()
+            'created_at': self.created_at.timestamp(),
+            'awards': [award.as_dict() for award in self.awards]
         }
 
     @classmethod
@@ -52,6 +55,15 @@ class Account(BaseModel):
             name=user.name,
             discriminator=user.discriminator,
             avatar_url=user.avatar_url
+        )
+
+    @property
+    def awards(self) -> list[awards.Award]:
+        """Get a list of awards this player has won."""
+        return list(
+            awards.Award.select().join(
+                awards.Awardee, peewee.JOIN.LEFT_OUTER
+            ).where(awards.Awardee.account_id == self.id)
         )
 
 

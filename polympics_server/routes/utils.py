@@ -12,7 +12,30 @@ from .. import config
 from ..models import App, Scope, Session
 
 
-server = FastAPI(debug=config.DEBUG, title='Polympics API')
+server = FastAPI(
+    debug=config.DEBUG,
+    title='Polympics API',
+    description='API server for the Polympics website.',
+    version='0.4.0',
+    openapi_tags=[
+        {
+            'name': 'accounts',
+            'description': 'Endpoints for managing user accounts.'
+        },
+        {
+            'name': 'teams',
+            'description': 'Endpoints for managing user teams.'
+        },
+        {
+            'name': 'awards',
+            'description': 'Endpoints for managing awards.'
+        },
+        {
+            'name': 'auth',
+            'description': 'Endpoints relating to client authentication.'
+        }
+    ]
+)
 security = HTTPBasic()
 
 server.add_middleware(

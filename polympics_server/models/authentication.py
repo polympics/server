@@ -43,6 +43,8 @@ class App(BaseModel):
     manage_account_details = permissions.flag(1 << 2)
     manage_teams = permissions.flag(1 << 3)
     authenticate_users = permissions.flag(1 << 4)
+    # 1 << 5 is used for a different purpose by user permissions.
+    manage_awards = permissions.flag(1 << 6)
 
     def as_dict(self, with_token: bool = False) -> dict[str, Any]:
         """Get the app as a dict to return from the API."""
@@ -69,7 +71,8 @@ class App(BaseModel):
             manage_account_teams=self.manage_account_teams,
             manage_account_details=self.manage_account_details,
             manage_teams=self.manage_teams,
-            authenticate_users=self.authenticate_users
+            authenticate_users=self.authenticate_users,
+            manage_awards=self.manage_awards
         )
 
     @property
@@ -107,7 +110,8 @@ class Session(BaseModel):
             manage_account_teams=self.account.manage_account_teams,
             manage_account_details=self.account.manage_account_details,
             manage_teams=self.account.manage_teams,
-            manage_own_team=self.account.manage_own_team
+            manage_own_team=self.account.manage_own_team,
+            manage_awards=self.account.manage_awards
         )
 
     def as_dict(self) -> dict[str, Any]:
@@ -137,6 +141,7 @@ class Scope:
     manage_teams: bool = False
     manage_own_team: bool = False
     authenticate_users: bool = False
+    manage_awards: bool = False
 
     def owns_account(self, account: Account) -> bool:
         """Check if the scope is for a given account."""

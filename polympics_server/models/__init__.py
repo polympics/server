@@ -1,4 +1,5 @@
 """Interface with the database."""
+from .awards import Award, Awardee                                 # noqa:F401
 from .accounts import Account                                      # noqa:F401
 from .authentication import App, Scope, Session                    # noqa:F401
 from .database import db, ExplicitNone                             # noqa:F401

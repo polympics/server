@@ -17,7 +17,8 @@ class Team(BaseModel):
             'id': self.id,
             'name': self.name,
             'created_at': self.created_at.timestamp(),
-            'member_count': self.members.count()
+            'member_count': self.members.count(),
+            'awards': [award.as_dict() for award in self.awards]
         }
 
 
