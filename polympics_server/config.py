@@ -1,14 +1,18 @@
 """Read JSON config for the bot."""
 import json
 import logging
+import os
 import pathlib
 from datetime import timedelta
 
 
 BASE_PATH = pathlib.Path(__file__).parent.parent
 
-with open(str(BASE_PATH / 'config.json')) as f:
-    config = json.load(f)
+try:
+    with open(str(BASE_PATH / 'config.json')) as f:
+        config = json.load(f)
+except FileNotFoundError:
+    config = {key.lower(): value for key, value in os.environ.items()}
 
 
 def get_log_level(field: str, default: int) -> int:
@@ -49,9 +53,33 @@ def get_timedelta(field: str, default: timedelta) -> timedelta:
     return timedelta(seconds=seconds)
 
 
-DEBUG = config.get('debug', False)
-MAX_SESSION_AGE = config.get('max_session_age', timedelta(days=30))
-ALLOWED_ORIGINS = config.get('allowed_origins', [])
+def get_bool(field: str, default: bool) -> bool:
+    """Parse a boolean in config."""
+    if field not in config:
+        return default
+    value = str(config.get(field)).lower()
+    if value in ('1', 'true', 't', 'yes', 'y', 'on', 'enabled'):
+        return True
+    elif value in ('0', 'false', 'f', 'no', 'n', 'off', 'disabled'):
+        return False
+    else:
+        raise ValueError(
+            f'Unrecognised value for {field}, should be true or false.'
+        )
+
+
+def get_list(field: str, default: None) -> bool:
+    """Parse a list of strings in config."""
+    if field not in config:
+        return default or []
+    if isinstance(config[field], list):
+        return config[field]
+    return config[field].split(',')
+
+
+DEBUG = get_bool('debug', False)
+MAX_SESSION_AGE = get_timedelta('max_session_age', timedelta(days=30))
+ALLOWED_ORIGINS = get_list('allowed_origins', [])
 
 DB_NAME = config.get('db_name', 'polympics')
 DB_USER = config.get('db_user', 'polympics')

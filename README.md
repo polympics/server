@@ -43,6 +43,8 @@ Configuration goes in the same dir as this README, in a file named `config.json`
 | `discord_api_url` | ``https://discord.com/api/v8`` | The URL of the Discord API. |
 | `discord_cdn_url` | ``https://cdn.discordapp.com`` | The URL of the Discord CDN. |
 
+These can also all be set as environment variables.
+
 ## CLI
 
 You can access the server management CLI from the command line by running (with pipenv enabled):
