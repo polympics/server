@@ -7,12 +7,14 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Types of JSON object &mdash; Polympics API Server 0.3.5 documentation</title>
+  <title>Types of JSON object &mdash; Polympics API Server 0.4.0 documentation</title>
   
 
   
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
 
   
   
@@ -29,6 +31,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
@@ -91,6 +94,7 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Types of JSON object</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#account"><code class="docutils literal notranslate"><span class="pre">Account</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#team"><code class="docutils literal notranslate"><span class="pre">Team</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#award"><code class="docutils literal notranslate"><span class="pre">Award</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#session"><code class="docutils literal notranslate"><span class="pre">Session</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#app"><code class="docutils literal notranslate"><span class="pre">App</span></code></a></li>
 </ul>
@@ -175,6 +179,7 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">team</span></code> (optional <code class="docutils literal notranslate"><span class="pre">Team</span></code> object)</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">permissions</span></code> (<code class="docutils literal notranslate"><span class="pre">int</span></code>, see <a class="reference internal" href="permissions.html"><span class="doc">Permissions</span></a>)</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">created_at</span></code> (<code class="docutils literal notranslate"><span class="pre">decimal</span></code>, seconds since the UNIX epoch)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">awards</span></code> (<code class="docutils literal notranslate"><span class="pre">list</span></code> of <code class="docutils literal notranslate"><span class="pre">Award</span></code> objects)</p></li>
 </ul>
 </div>
 <div class="section" id="team">
@@ -185,6 +190,15 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">name</span></code> (<code class="docutils literal notranslate"><span class="pre">string</span></code>)</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">created_at</span></code> (<code class="docutils literal notranslate"><span class="pre">decimal</span></code>, seconds since the UNIX epoch)</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">member_count</span></code> (<code class="docutils literal notranslate"><span class="pre">int</span></code>)</p></li>
+</ul>
+</div>
+<div class="section" id="award">
+<h2><code class="docutils literal notranslate"><span class="pre">Award</span></code><a class="headerlink" href="#award" title="Permalink to this headline">¶</a></h2>
+<p>Attributes:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">id</span></code> (<code class="docutils literal notranslate"><span class="pre">int</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">title</span></code> (<code class="docutils literal notranslate"><span class="pre">string</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">image_url</span></code> (<code class="docutils literal notranslate"><span class="pre">string</span></code>)</p></li>
 </ul>
 </div>
 <div class="section" id="session">

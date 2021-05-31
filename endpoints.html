@@ -7,12 +7,14 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>List of API endpoints &mdash; Polympics API Server 0.3.5 documentation</title>
+  <title>List of API endpoints &mdash; Polympics API Server 0.4.0 documentation</title>
   
 
   
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
 
   
   
@@ -29,6 +31,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
@@ -101,6 +104,15 @@
 <li class="toctree-l3"><a class="reference internal" href="#get-team-team"><code class="docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/team/{team}</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#patch-team-team"><code class="docutils literal notranslate"><span class="pre">PATCH</span> <span class="pre">/team/{team}</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#delete-team-team"><code class="docutils literal notranslate"><span class="pre">DELETE</span> <span class="pre">/team/{team}</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#award-related-endpoints">Award-related endpoints</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#post-awards-new"><code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/awards/new</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#patch-awards-award"><code class="docutils literal notranslate"><span class="pre">PATCH</span> <span class="pre">/awards/{award}</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#get-awards-award"><code class="docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/awards/{award}</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#delete-awards-award"><code class="docutils literal notranslate"><span class="pre">DELETE</span> <span class="pre">/awards/{award}</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#put-account-account-award-award"><code class="docutils literal notranslate"><span class="pre">PUT</span> <span class="pre">/account/{account}/award/{award}</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#delete-account-account-award-award"><code class="docutils literal notranslate"><span class="pre">DELETE</span> <span class="pre">/account/{account}/award/{award}</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#authentication-related-endpoints">Authentication-related endpoints</a><ul>
@@ -340,6 +352,75 @@ also add yourself to a team.</p>
 <li><p><code class="docutils literal notranslate"><span class="pre">team</span></code> (<code class="docutils literal notranslate"><span class="pre">int</span></code>, ID of the team to delete)</p></li>
 </ul>
 <p>Returns <code class="docutils literal notranslate"><span class="pre">204</span></code> (no content) if successful, or a <code class="docutils literal notranslate"><span class="pre">422</span></code> error if not found (<strong>not</strong> a <code class="docutils literal notranslate"><span class="pre">404</span></code> error).</p>
+</div>
+</div>
+<div class="section" id="award-related-endpoints">
+<h2>Award-related endpoints<a class="headerlink" href="#award-related-endpoints" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="post-awards-new">
+<h3><code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/awards/new</span></code><a class="headerlink" href="#post-awards-new" title="Permalink to this headline">¶</a></h3>
+<p>Creates a new award. An award is given to a selection of users but also to their team. Requires the <code class="docutils literal notranslate"><span class="pre">manage_awards</span></code> permission.</p>
+<p>Parameters (JSON body):</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">title</span></code> (<code class="docutils literal notranslate"><span class="pre">string</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">image_url</span></code> (<code class="docutils literal notranslate"><span class="pre">string</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">team</span></code> (<code class="docutils literal notranslate"><span class="pre">int</span></code>, the ID of a team)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">accounts</span></code> (<code class="docutils literal notranslate"><span class="pre">list``of</span> <span class="pre">``int</span></code> s, the IDs of accounts)</p></li>
+</ul>
+<p><code class="docutils literal notranslate"><span class="pre">team</span></code> <em>should</em> (but is not required to) refer to a team that all the <code class="docutils literal notranslate"><span class="pre">accounts</span></code> are part of.</p>
+<p>Returns an <code class="docutils literal notranslate"><span class="pre">Award</span></code> object.</p>
+</div>
+<div class="section" id="patch-awards-award">
+<h3><code class="docutils literal notranslate"><span class="pre">PATCH</span> <span class="pre">/awards/{award}</span></code><a class="headerlink" href="#patch-awards-award" title="Permalink to this headline">¶</a></h3>
+<p>Updates an existing award. Requires the <code class="docutils literal notranslate"><span class="pre">manage_awards</span></code> permission.</p>
+<p>Parameters (dynamic URL path):</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">award</span></code> (<code class="docutils literal notranslate"><span class="pre">int</span></code>, the ID of the award to edit)</p></li>
+</ul>
+<p>Parameters (JSON body):</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">title</span></code> (optional <code class="docutils literal notranslate"><span class="pre">string</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">image_url</span></code> (optional <code class="docutils literal notranslate"><span class="pre">string</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">team</span></code> (optional <code class="docutils literal notranslate"><span class="pre">int</span></code>, the ID of a team)</p></li>
+</ul>
+<p>Returns an <code class="docutils literal notranslate"><span class="pre">Award</span></code> object, or a <code class="docutils literal notranslate"><span class="pre">422</span></code> error if not found (<strong>not</strong> a <code class="docutils literal notranslate"><span class="pre">404</span></code> error).</p>
+</div>
+<div class="section" id="get-awards-award">
+<h3><code class="docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/awards/{award}</span></code><a class="headerlink" href="#get-awards-award" title="Permalink to this headline">¶</a></h3>
+<p>Get the details of an award.</p>
+<p>Parameters (dynamic URL path):</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">award</span></code> (<code class="docutils literal notranslate"><span class="pre">int</span></code>, the ID of the award to get)</p></li>
+</ul>
+<p>Returns an <code class="docutils literal notranslate"><span class="pre">Award</span></code> object, or a <code class="docutils literal notranslate"><span class="pre">422</span></code> error if not found (<strong>not</strong> a <code class="docutils literal notranslate"><span class="pre">404</span></code> error).</p>
+</div>
+<div class="section" id="delete-awards-award">
+<h3><code class="docutils literal notranslate"><span class="pre">DELETE</span> <span class="pre">/awards/{award}</span></code><a class="headerlink" href="#delete-awards-award" title="Permalink to this headline">¶</a></h3>
+<p>Remove an award. Requires the <code class="docutils literal notranslate"><span class="pre">manage_awards</span></code> permission.</p>
+<p>Parameters (dynamic URL path):</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">award</span></code> (<code class="docutils literal notranslate"><span class="pre">int</span></code>, the ID of the award to delete)</p></li>
+</ul>
+<p>Returns <code class="docutils literal notranslate"><span class="pre">204</span></code> (no content) if successful, or a <code class="docutils literal notranslate"><span class="pre">422</span></code> error if not found (<strong>not</strong> a <code class="docutils literal notranslate"><span class="pre">404</span></code> error).</p>
+</div>
+<div class="section" id="put-account-account-award-award">
+<h3><code class="docutils literal notranslate"><span class="pre">PUT</span> <span class="pre">/account/{account}/award/{award}</span></code><a class="headerlink" href="#put-account-account-award-award" title="Permalink to this headline">¶</a></h3>
+<p>Give an existing award to a new user. Requires the <code class="docutils literal notranslate"><span class="pre">manage_awards</span></code> permission.</p>
+<p>Parameters (dynamic URL path):</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">account</span></code> (<code class="docutils literal notranslate"><span class="pre">int</span></code>, the ID of the account to assign the award to)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">award</span></code> (<code class="docutils literal notranslate"><span class="pre">int</span></code>, the ID of the award to assign)</p></li>
+</ul>
+<p>Returns <code class="docutils literal notranslate"><span class="pre">201</span></code> with no content if successful, <code class="docutils literal notranslate"><span class="pre">208</span></code> if the user already had the award, or <code class="docutils literal notranslate"><span class="pre">422</span></code> if the user or award was not found.</p>
+</div>
+<div class="section" id="delete-account-account-award-award">
+<h3><code class="docutils literal notranslate"><span class="pre">DELETE</span> <span class="pre">/account/{account}/award/{award}</span></code><a class="headerlink" href="#delete-account-account-award-award" title="Permalink to this headline">¶</a></h3>
+<p>Remove an award from a user. Requires the <code class="docutils literal notranslate"><span class="pre">manage_awards</span></code> permission.</p>
+<p>Parameters (dynamic URL path):</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">account</span></code> (<code class="docutils literal notranslate"><span class="pre">int</span></code>, the ID of the account to remove the award from)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">award</span></code> (<code class="docutils literal notranslate"><span class="pre">int</span></code>, the ID of the award to remove)</p></li>
+</ul>
+<p>Returns <code class="docutils literal notranslate"><span class="pre">204</span></code> (no content) if successful, <code class="docutils literal notranslate"><span class="pre">404</span></code> if the user did not have the award, or <code class="docutils literal notranslate"><span class="pre">422</span></code> if the user or award was not found.</p>
 </div>
 </div>
 <div class="section" id="authentication-related-endpoints">
