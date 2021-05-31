@@ -1,1 +1,1 @@
-web: gunicorn -w 4 -k uvicorn.workers.UvicornWorker polympics_server:application
+web: gunicorn -w 1 -k uvicorn.workers.UvicornWorker polympics_server:application
