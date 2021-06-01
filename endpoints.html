@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>List of API endpoints &mdash; Polympics API Server 0.4.0 documentation</title>
+  <title>List of API endpoints &mdash; Polympics API Server 0.4.1 documentation</title>
   
 
   
@@ -364,7 +364,7 @@ also add yourself to a team.</p>
 <li><p><code class="docutils literal notranslate"><span class="pre">title</span></code> (<code class="docutils literal notranslate"><span class="pre">string</span></code>)</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">image_url</span></code> (<code class="docutils literal notranslate"><span class="pre">string</span></code>)</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">team</span></code> (<code class="docutils literal notranslate"><span class="pre">int</span></code>, the ID of a team)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">accounts</span></code> (<code class="docutils literal notranslate"><span class="pre">list``of</span> <span class="pre">``int</span></code> s, the IDs of accounts)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">accounts</span></code> (<code class="docutils literal notranslate"><span class="pre">list``of</span> <span class="pre">``string</span></code> s, the IDs of accounts)</p></li>
 </ul>
 <p><code class="docutils literal notranslate"><span class="pre">team</span></code> <em>should</em> (but is not required to) refer to a team that all the <code class="docutils literal notranslate"><span class="pre">accounts</span></code> are part of.</p>
 <p>Returns an <code class="docutils literal notranslate"><span class="pre">Award</span></code> object.</p>
@@ -391,7 +391,12 @@ also add yourself to a team.</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">award</span></code> (<code class="docutils literal notranslate"><span class="pre">int</span></code>, the ID of the award to get)</p></li>
 </ul>
-<p>Returns an <code class="docutils literal notranslate"><span class="pre">Award</span></code> object, or a <code class="docutils literal notranslate"><span class="pre">422</span></code> error if not found (<strong>not</strong> a <code class="docutils literal notranslate"><span class="pre">404</span></code> error).</p>
+<p>Returns:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">award</span> <span class="pre">(an</span> <span class="pre">``Award</span></code> object)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">awardees</span></code> (a <code class="docutils literal notranslate"><span class="pre">list</span></code> of <code class="docutils literal notranslate"><span class="pre">Account</span></code> objects)</p></li>
+</ul>
+<p>Instead returns a <code class="docutils literal notranslate"><span class="pre">422</span></code> error if not found (<strong>not</strong> a <code class="docutils literal notranslate"><span class="pre">404</span></code> error).</p>
 </div>
 <div class="section" id="delete-awards-award">
 <h3><code class="docutils literal notranslate"><span class="pre">DELETE</span> <span class="pre">/awards/{award}</span></code><a class="headerlink" href="#delete-awards-award" title="Permalink to this headline">¶</a></h3>
@@ -407,7 +412,7 @@ also add yourself to a team.</p>
 <p>Give an existing award to a new user. Requires the <code class="docutils literal notranslate"><span class="pre">manage_awards</span></code> permission.</p>
 <p>Parameters (dynamic URL path):</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">account</span></code> (<code class="docutils literal notranslate"><span class="pre">int</span></code>, the ID of the account to assign the award to)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">account</span></code> (<code class="docutils literal notranslate"><span class="pre">string</span></code>, the ID of the account to assign the award to)</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">award</span></code> (<code class="docutils literal notranslate"><span class="pre">int</span></code>, the ID of the award to assign)</p></li>
 </ul>
 <p>Returns <code class="docutils literal notranslate"><span class="pre">201</span></code> with no content if successful, <code class="docutils literal notranslate"><span class="pre">208</span></code> if the user already had the award, or <code class="docutils literal notranslate"><span class="pre">422</span></code> if the user or award was not found.</p>
@@ -417,7 +422,7 @@ also add yourself to a team.</p>
 <p>Remove an award from a user. Requires the <code class="docutils literal notranslate"><span class="pre">manage_awards</span></code> permission.</p>
 <p>Parameters (dynamic URL path):</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">account</span></code> (<code class="docutils literal notranslate"><span class="pre">int</span></code>, the ID of the account to remove the award from)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">account</span></code> (<code class="docutils literal notranslate"><span class="pre">string</span></code>, the ID of the account to remove the award from)</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">award</span></code> (<code class="docutils literal notranslate"><span class="pre">int</span></code>, the ID of the award to remove)</p></li>
 </ul>
 <p>Returns <code class="docutils literal notranslate"><span class="pre">204</span></code> (no content) if successful, <code class="docutils literal notranslate"><span class="pre">404</span></code> if the user did not have the award, or <code class="docutils literal notranslate"><span class="pre">422</span></code> if the user or award was not found.</p>

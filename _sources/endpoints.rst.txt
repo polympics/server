@@ -176,7 +176,7 @@ Parameters (JSON body):
 - ``title`` (``string``)
 - ``image_url`` (``string``)
 - ``team`` (``int``, the ID of a team)
-- ``accounts`` (``list``of ``int`` s, the IDs of accounts)
+- ``accounts`` (``list``of ``string`` s, the IDs of accounts)
 
 ``team`` *should* (but is not required to) refer to a team that all the ``accounts`` are part of.
 
@@ -208,7 +208,12 @@ Parameters (dynamic URL path):
 
 - ``award`` (``int``, the ID of the award to get)
 
-Returns an ``Award`` object, or a ``422`` error if not found (**not** a ``404`` error).
+Returns:
+
+- ``award (an ``Award`` object)
+- ``awardees`` (a ``list`` of ``Account`` objects)
+
+Instead returns a ``422`` error if not found (**not** a ``404`` error).
 
 ``DELETE /awards/{award}``
 --------------------------
@@ -228,7 +233,7 @@ Give an existing award to a new user. Requires the ``manage_awards`` permission.
 
 Parameters (dynamic URL path):
 
-- ``account`` (``int``, the ID of the account to assign the award to)
+- ``account`` (``string``, the ID of the account to assign the award to)
 - ``award`` (``int``, the ID of the award to assign)
 
 Returns ``201`` with no content if successful, ``208`` if the user already had the award, or ``422`` if the user or award was not found.
@@ -240,7 +245,7 @@ Remove an award from a user. Requires the ``manage_awards`` permission.
 
 Parameters (dynamic URL path):
 
-- ``account`` (``int``, the ID of the account to remove the award from)
+- ``account`` (``string``, the ID of the account to remove the award from)
 - ``award`` (``int``, the ID of the award to remove)
 
 Returns ``204`` (no content) if successful, ``404`` if the user did not have the award, or ``422`` if the user or award was not found.
