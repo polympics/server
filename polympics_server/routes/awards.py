@@ -66,7 +66,13 @@ async def update_award(
 @server.get('/award/{award}', tags=['awards'])
 async def get_award(award: Award) -> dict[str, Any]:
     """Get an award."""
-    return award.as_dict()
+    awardees = Account.select().join(Awardee).where(
+        Awardee.award_id == award.id
+    )
+    return {
+        'award': award.as_dict(),
+        'awardees': [awardee.as_dict() for awardee in awardees]
+    }
 
 
 @server.delete('/award/{award}', status_code=204, tags=['awards'])
