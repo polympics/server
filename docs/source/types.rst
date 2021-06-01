@@ -25,6 +25,7 @@ Attributes:
 - ``name`` (``string``)
 - ``created_at`` (``decimal``, seconds since the UNIX epoch)
 - ``member_count`` (``int``)
+- ``awards`` (``list`` of ``Award`` objects)
 
 ``Award``
 ---------
