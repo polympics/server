@@ -20,7 +20,7 @@ class Award(BaseModel):
         return {
             'id': self.id,
             'title': self.title,
-            'image': self.image_url
+            'image_url': self.image_url
         }
 
 
@@ -30,8 +30,8 @@ class Awardee(BaseModel):
     Can be multiple per award.
     """
 
-    award = peewee.ForeignKeyField(Award)
-    account = peewee.ForeignKeyField(accounts.Account)
+    award = peewee.ForeignKeyField(Award, on_delete='CASCADE')
+    account = peewee.ForeignKeyField(accounts.Account, on_delete='CASCADE')
 
 
 db.create_tables([Award, Awardee])

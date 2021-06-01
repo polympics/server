@@ -158,7 +158,7 @@ class Scope:
     def can_alter_permissions(
             self, team: Team, permissions: int) -> bool:
         """Check if the owner of the scope can alter given permissions."""
-        if permissions > (1 << 6) - 1:
+        if permissions >= 1 << 7:
             # Sets a value higher than any permission.
             return False
         if permissions & 1 << 4:
@@ -167,7 +167,8 @@ class Scope:
         for n, self_has_perm in enumerate((
                 self.manage_permissions, self.manage_account_teams,
                 self.manage_account_details, self.manage_teams,
-                self.authenticate_users, self.manage_own_team)):
+                self.authenticate_users, self.manage_own_team,
+                self.manage_awards)):
             if not self_has_perm:
                 if (permissions & (1 << n)) and n != 5:
                     # Can't grant permissions you don't have, except

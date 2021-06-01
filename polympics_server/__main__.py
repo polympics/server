@@ -15,7 +15,7 @@ from .models import Account, App, Session, db
 
 PERMISSIONS = [
     'manage_permissions', 'manage_account_teams', 'manage_account_details',
-    'manage_teams', 'authenticate_users'
+    'manage_teams', 'authenticate_users', 'manage_own_team', 'manage_awards'
 ]
 MIGRATIONS = [
     file_name[:-3] for file_name in
@@ -140,6 +140,8 @@ class Apps(CommandGroup):
         """Create an app."""
         if all_permissions:
             permissions = (1 << len(PERMISSIONS)) - 1
+            # An app cannot have the manage_own_team permission.
+            permissions &= ~(1 << PERMISSIONS.index('manage_own_team'))
         else:
             permissions = grant_permissions
         app = App.create(name=name, permissions=permissions)
