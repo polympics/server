@@ -176,13 +176,13 @@ Parameters (JSON body):
 - ``title`` (``string``)
 - ``image_url`` (``string``)
 - ``team`` (``int``, the ID of a team)
-- ``accounts`` (``list``of ``string`` s, the IDs of accounts)
+- ``accounts`` (``list`` of ``string`` s, the IDs of accounts)
 
 ``team`` *should* (but is not required to) refer to a team that all the ``accounts`` are part of.
 
 Returns an ``Award`` object.
 
-``PATCH /awards/{award}``
+``PATCH /award/{award}``
 -------------------------
 
 Updates an existing award. Requires the ``manage_awards`` permission.
@@ -199,7 +199,7 @@ Parameters (JSON body):
 
 Returns an ``Award`` object, or a ``422`` error if not found (**not** a ``404`` error).
 
-``GET /awards/{award}``
+``GET /award/{award}``
 -----------------------
 
 Get the details of an award.
@@ -215,7 +215,7 @@ Returns:
 
 Instead returns a ``422`` error if not found (**not** a ``404`` error).
 
-``DELETE /awards/{award}``
+``DELETE /award/{award}``
 --------------------------
 
 Remove an award. Requires the ``manage_awards`` permission.
