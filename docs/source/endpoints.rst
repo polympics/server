@@ -212,6 +212,7 @@ Returns:
 
 - ``award (an ``Award`` object)
 - ``awardees`` (a ``list`` of ``Account`` objects)
+- ``team`` (optional ``Team`` object)
 
 Instead returns a ``422`` error if not found (**not** a ``404`` error).
 

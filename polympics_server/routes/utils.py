@@ -16,7 +16,7 @@ server = FastAPI(
     debug=config.DEBUG,
     title='Polympics API',
     description='API server for the Polympics website.',
-    version='0.4.1',
+    version='0.4.2',
     openapi_tags=[
         {
             'name': 'accounts',
