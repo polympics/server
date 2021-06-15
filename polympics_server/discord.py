@@ -4,12 +4,9 @@ This is responsible for using a user auth token to get user data.
 """
 import dataclasses
 
-import aiohttp
-
 from .config import DISCORD_API_URL, DISCORD_CDN_URL
+from .requests import get_session
 
-
-session: aiohttp.ClientSession = None
 
 AVATAR_URL = f'{DISCORD_CDN_URL}/avatars/{{id}}/{{hash}}.png'
 
@@ -22,14 +19,6 @@ class DiscordUser:
     name: str
     avatar_url: str
     discriminator: str
-
-
-async def get_session() -> session:
-    """Get or create the aiohttp session."""
-    global session
-    if (not session) or session.closed:
-        session = aiohttp.ClientSession()
-    return session
 
 
 async def get_user(token: str) -> DiscordUser:

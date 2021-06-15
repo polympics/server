@@ -36,6 +36,15 @@ Attributes:
 - ``title`` (``string``)
 - ``image_url`` (``string``)
 
+``Callback``
+------------
+
+Attributes:
+
+- ``id`` (``int``)
+- ``event`` (``string``, see :doc:`/callbacks`)
+- ``url`` (``string``)
+
 ``Session``
 -----------
 

@@ -1,7 +1,7 @@
 """Account creation, viewing and editing."""
 from typing import Any, Optional, Union
 
-from fastapi import Depends, HTTPException, Response
+from fastapi import BackgroundTasks, Depends, HTTPException, Response
 
 import peewee
 
@@ -9,7 +9,7 @@ from pydantic import BaseModel
 
 from .utils import Paginate, auth_assert, authenticate, server
 from .. import discord
-from ..models import Account, ExplicitNone, Scope, Team
+from ..models import Account, Callback, Event, ExplicitNone, Scope, Team
 
 
 class SignupForm(BaseModel):
@@ -72,6 +72,7 @@ async def search_for_account(
 @server.patch('/account/{account}', tags=['accounts'])
 async def update_account(
         account: Account, data: AccountEditForm,
+        background_tasks: BackgroundTasks,
         scope: Scope = Depends(authenticate)) -> Response:
     """Edit an account."""
     if data.name:
@@ -94,6 +95,14 @@ async def update_account(
         joining = scope.account and scope.account.id == account.id
         auth_assert(scope.manage_account_teams or kicking or joining)
         account.team = data.team
+        background_tasks.add_task(
+            Callback.dispatch_event,
+            Event.ACCOUNT_TEAM_UPDATE,
+            {
+                'account': account.as_dict(),
+                'team': data.team.as_dict() if data.team else None
+            }
+        )
     if data.grant_permissions:
         auth_assert(scope.can_alter_permissions(
             account.team, data.grant_permissions
