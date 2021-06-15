@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Index &mdash; Polympics API Server 0.5.0 documentation</title>
+  <title>Callbacks &mdash; Polympics API Server 0.5.0 documentation</title>
   
 
   
@@ -39,7 +39,7 @@
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
     
-    <link rel="index" title="Index" href="#" />
+    <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" /> 
 </head>
 
@@ -139,11 +139,13 @@
     
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
-      <li>Index</li>
+      <li>Callbacks</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
+          
+            <a href="_sources/callbacks.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -156,11 +158,38 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
+  <div class="section" id="callbacks">
+<h1>Callbacks<a class="headerlink" href="#callbacks" title="Permalink to this headline">¶</a></h1>
+<p>Callbacks allow apps to register HTTP endpoints that will be sent a request when an event occurs. To register a callback, use <code class="docutils literal notranslate"><span class="pre">PUT</span> <span class="pre">/callbacks/{event}</span></code> (see <a class="reference internal" href="endpoints.html"><span class="doc">List of API endpoints</span></a> for more information).</p>
+<p>Callback requests sent to reigstered URLs will be <code class="docutils literal notranslate"><span class="pre">POST</span></code> requests. The body will be a JSON object (different depending on the type of event). An <code class="docutils literal notranslate"><span class="pre">Authorization</span></code> header will be sent using the <code class="docutils literal notranslate"><span class="pre">Bearer</span></code> authorisation scheme and the token set to the secret provided when creating the callback.</p>
+<p>For example, if a callback is registered like so:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>PUT /callbacks/account_team_update
+Authorization: Basic QTE6aHR0cHM6Ly95b3V0dWJlLmNvbS93YXRjaD92PWRRdzR3OVdnWGNR
 
-<h1 id="index">Index</h1>
+{
+    &quot;url&quot;: &quot;https://example.com/cbs/team_changed&quot;,
+    &quot;secret&quot;: &quot;obviously-dont-use-this&quot;
+}
+</pre></div>
+</div>
+<p>Then when an event is triggered, it will look like this:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>POST https://example.com/cbs/team_changed
+Authorization: Bearer obviously-dont-use-this
 
-<div class="genindex-jumpbox">
- 
+{
+    ...
+}
+</pre></div>
+</div>
+<p>The following event types are currently defined:</p>
+<div class="section" id="account-team-update">
+<h2><code class="docutils literal notranslate"><span class="pre">account_team_update</span></code><a class="headerlink" href="#account-team-update" title="Permalink to this headline">¶</a></h2>
+<p>Called when a user’s team is changed. Data sent is an object with the following keys:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">account</span></code> (the new <code class="docutils literal notranslate"><span class="pre">Account</span></code> object)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">team</span></code> (the new <code class="docutils literal notranslate"><span class="pre">Team</span></code> object, or <code class="docutils literal notranslate"><span class="pre">null</span></code> if the user no longer has a team)</p></li>
+</ul>
+</div>
 </div>
 
 

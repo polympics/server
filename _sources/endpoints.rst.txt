@@ -251,6 +251,56 @@ Parameters (dynamic URL path):
 
 Returns ``204`` (no content) if successful, ``404`` if the user did not have the award, or ``422`` if the user or award was not found.
 
+Callback-related endpoints
+==========================
+
+``PUT /callback/{event}``
+-------------------------
+
+Create a callback for a specified event type. Requires an app token.
+
+Parameters (dynamic URL path):
+
+- ``event`` (``string``, see :doc:`/callbacks` for event types)
+
+Parameters (JSON body):
+
+- ``url`` (``string``, the URL to recieve events)
+- ``secret`` (``string``, a secret to use when sending events)
+
+Returns a ``Callback`` object. If a callback already exists for this event type, this endpoint will override it. If the event type is invalid, returns a ``422`` error.
+
+``DELETE /callback/{event}``
+----------------------------
+
+Delete the callback for a specified event type. Requires an app token.
+
+Parameters (dynamic URL path):
+
+- ``event`` (``string``, the event type to delete the callback for)
+
+Returns ``204`` (no content) if successful, a ``422`` error if the event type is invalid, or ``404`` error if there is no callback registered for the event type.
+
+``GET /callback/{event}``
+-------------------------
+
+Get details on a registered callback. Requires an app token.
+
+Parameters (dynamic URL path):
+
+- ``event`` (``string``, see :doc:`/callbacks` for event types)
+
+Returns a ``Callback`` object if successful, a ``422`` error if the event type is invalid, or ``404`` error if there is no callback registered for the event type.
+
+``GET /callbacks``
+------------------
+
+Get all registered callbacks for the authenticated app. Requires an app token.
+
+Returns:
+
+- ``callbacks`` (an object where the keys are event types and the values are the registered callback URLs)
+
 Authentication-related endpoints
 ================================
 
