@@ -57,7 +57,7 @@ async def signup(
 @server.get('/accounts/search', tags=['accounts'])
 async def search_for_account(
         q: str = None, team: Team = None,
-        paginate: Paginate = Depends(Paginate)) -> list[dict[str, Any]]:
+        paginate: Paginate = Depends(Paginate)) -> dict[str, Any]:
     """Search for accounts by name, team, both or neither."""
     query = Account.select().order_by(
         Account.name, Account.id

@@ -28,7 +28,7 @@ async def create_team(
 @server.get('/teams/search', tags=['teams'])
 async def all_teams(
         q: str = None,
-        paginate: Paginate = Depends(Paginate)) -> list[dict[str, Any]]:
+        paginate: Paginate = Depends(Paginate)) -> dict[str, Any]:
     """Get all teams, optionally searching by name."""
     query = Team.select().order_by(Team.name, Team.id)
     if q:

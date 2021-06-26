@@ -21,7 +21,7 @@ class Account(BaseModel):
         Team, backref='members', null=True, on_delete='SET NULL'
     )
     avatar_url = peewee.CharField(max_length=512, null=True)
-    permissions = peewee.BitField(default=0)
+    permissions = peewee.BitField(default=1 << 9 | 1 << 10)
 
     manage_permissions = permissions.flag(1 << 0)
     manage_account_teams = permissions.flag(1 << 1)
@@ -30,6 +30,10 @@ class Account(BaseModel):
     # 1 << 4 is used for a different purpose by app permissions.
     manage_own_team = permissions.flag(1 << 5)
     manage_awards = permissions.flag(1 << 6)
+    manage_contests = permissions.flag(1 << 7)
+    manage_contest_submissions = permissions.flag(1 << 8)
+    make_contest_submissions = permissions.flag(1 << 9)
+    vote_contest_submissions = permissions.flag(1 << 10)
 
     def as_dict(self) -> dict[str, Any]:
         """Get the account as a dict to be returned as JSON."""

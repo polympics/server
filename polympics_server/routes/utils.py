@@ -55,12 +55,15 @@ class Paginate:
         self.page = page
         self.per_page = per_page
 
-    def __call__(self, query: peewee.SelectQuery) -> dict[str, Any]:
+    def __call__(
+            self,
+            query: peewee.SelectQuery,
+            **as_dict_args: Any) -> dict[str, Any]:
         """Apply the pagination options to a query and return the result."""
         total = query.count()
         total_pages = math.ceil(total / self.per_page)
         data = [
-            record.as_dict() for record in
+            record.as_dict(**as_dict_args) for record in
             query.offset(self.page * self.per_page).limit(self.per_page)
         ]
         return {

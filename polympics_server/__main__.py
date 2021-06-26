@@ -15,7 +15,8 @@ from .models import Account, App, Session, db
 
 PERMISSIONS = [
     'manage_permissions', 'manage_account_teams', 'manage_account_details',
-    'manage_teams', 'authenticate_users', 'manage_own_team', 'manage_awards'
+    'manage_teams', 'authenticate_users', 'manage_own_team', 'manage_awards',
+    'manage_contests', 'manage_contest_submissions'
 ]
 MIGRATIONS = [
     file_name[:-3] for file_name in
@@ -248,6 +249,10 @@ class Users(CommandGroup):
         account.manage_teams = True
         account.manage_own_team = True
         account.manage_awards = True
+        account.manage_contests = True
+        account.manage_contest_submissions = True
+        account.make_contest_submissions = True
+        account.vote_contest_submissions = True
         account.save()
         print(
             f'Made account {account.id} ({account.name}#'

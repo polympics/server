@@ -12,6 +12,7 @@ cli = "python3 -m polympics_server"
 [packages]
 peewee = "*"
 fastapi = "*"
+python-multipart = "*"
 psycopg2 = "*"
 "uvicorn[standard]" = "*"
 gunicorn = "*"

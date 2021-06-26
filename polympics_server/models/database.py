@@ -51,7 +51,7 @@ class ExplicitNone:
 class BaseModel(peewee.Model):
     """Base model to set default settings."""
 
-    created_at = peewee.DateTimeField(default=datetime.now)
+    created_at = peewee.DateTimeField(default=datetime.utcnow)
 
     class Meta:
         """Peewee settings config."""

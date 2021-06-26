@@ -1,3 +1,10 @@
 """Load the API routes and expose the application."""
-from . import accounts, auth, awards, callbacks, teams    # noqa:F401
-from .utils import server                                 # noqa:F401
+from . import (              # noqa:F401
+    accounts,
+    auth,
+    awards,
+    callbacks,
+    contests,
+    teams
+)
+from .utils import server    # noqa:F401

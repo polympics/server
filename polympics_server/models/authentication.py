@@ -17,7 +17,7 @@ from ..config import MAX_SESSION_AGE
 
 def get_expires_time() -> datetime:
     """Get the time a session created now should expire."""
-    return datetime.now() + MAX_SESSION_AGE
+    return datetime.utcnow() + MAX_SESSION_AGE
 
 
 def generate_token() -> str:
@@ -45,6 +45,9 @@ class App(BaseModel):
     authenticate_users = permissions.flag(1 << 4)
     # 1 << 5 is used for a different purpose by user permissions.
     manage_awards = permissions.flag(1 << 6)
+    manage_contests = permissions.flag(1 << 7)
+    manage_contest_submissions = permissions.flag(1 << 8)
+    # 1 << 9 and 1 << 10 are not availble for apps.
 
     def as_dict(self, with_token: bool = False) -> dict[str, Any]:
         """Get the app as a dict to return from the API."""
@@ -72,7 +75,9 @@ class App(BaseModel):
             manage_account_details=self.manage_account_details,
             manage_teams=self.manage_teams,
             authenticate_users=self.authenticate_users,
-            manage_awards=self.manage_awards
+            manage_awards=self.manage_awards,
+            manage_contests=self.manage_contests,
+            manage_contest_submissions=self.manage_contest_submissions
         )
 
     @property
@@ -97,8 +102,8 @@ class Session(BaseModel):
 
     @property
     def expired(self) -> bool:
-        """Return False, because app tokens don't expire."""
-        return self.expires_at < datetime.now()
+        """Check if the session has expired."""
+        return self.expires_at < datetime.utcnow()
 
     @property
     def scope(self) -> Scope:
@@ -111,7 +116,11 @@ class Session(BaseModel):
             manage_account_details=self.account.manage_account_details,
             manage_teams=self.account.manage_teams,
             manage_own_team=self.account.manage_own_team,
-            manage_awards=self.account.manage_awards
+            manage_awards=self.account.manage_awards,
+            manage_contests=self.account.manage_contests,
+            manage_contest_submissions=self.account.manage_contest_submissions,
+            make_contest_submissions=self.account.make_contest_submissions,
+            vote_contest_submissions=self.account.vote_contest_submissions
         )
 
     def as_dict(self) -> dict[str, Any]:
@@ -142,6 +151,10 @@ class Scope:
     manage_own_team: bool = False
     authenticate_users: bool = False
     manage_awards: bool = False
+    manage_contests: bool = False
+    manage_contest_submissions: bool = False
+    make_contest_submissions: bool = False
+    vote_contest_submissions: bool = False
 
     def owns_account(self, account: Account) -> bool:
         """Check if the scope is for a given account."""
@@ -158,7 +171,7 @@ class Scope:
     def can_alter_permissions(
             self, team: Team, permissions: int) -> bool:
         """Check if the owner of the scope can alter given permissions."""
-        if permissions >= 1 << 7:
+        if permissions >= 1 << 11:
             # Sets a value higher than any permission.
             return False
         if permissions & 1 << 4:
@@ -168,7 +181,9 @@ class Scope:
                 self.manage_permissions, self.manage_account_teams,
                 self.manage_account_details, self.manage_teams,
                 self.authenticate_users, self.manage_own_team,
-                self.manage_awards)):
+                self.manage_awards, self.manage_contests,
+                self.manage_contest_submissions,
+                self.make_contest_submissions, self.vote_contest_submissions)):
             if not self_has_perm:
                 if (permissions & (1 << n)) and n != 5:
                     # Can't grant permissions you don't have, except
