@@ -251,6 +251,265 @@ Parameters (dynamic URL path):
 
 Returns ``204`` (no content) if successful, ``404`` if the user did not have the award, or ``422`` if the user or award was not found.
 
+Contest-related endpoints
+=========================
+
+``GET /contests``
+-----------------
+
+Get a list of contests.
+
+Returns:
+
+- ``contests`` (an array of ``Contest`` objects)
+
+Note that this endpoint is not paginated.
+
+``POST /contests/new``
+----------------------
+
+Create a new contest. Requires the ``manage_contests`` permission.
+
+Parameters (JSON body):
+
+- ``title`` (``string``)
+- ``description`` (``string``)
+- ``opens_at`` (``decimal``, seconds since the UNIX epoch)
+- ``closes_at`` (``decimal``, seconds since the UNIX epoch)
+- ``ends_at`` (``decimal``, seconds since the UNIX epoch)
+
+Returns the newly created ``Contest`` object.
+
+``GET /contests/{contest}``
+---------------------------
+
+Get a contest by ID.
+
+Parameters (dynamic URL path):
+
+- ``contest`` (``int``, the ID of the contest to get)
+
+Returns a ``Contest`` object or a ``422`` error if not found (**not** a ``404`` error).
+
+``DELETE /contests/{contest}``
+------------------------------
+
+Delete a contest by ID. Requires the ``manage_contests`` permission.
+
+Parameters (dynamic URL path):
+
+- ``contest`` (``int``, the ID of the contest to delete)
+
+Returns status code ``204`` (no content) or a ``422`` error if not found.
+
+``PATCH /contests/{contest}``
+-----------------------------
+
+Update a contest by ID. Requires the ``manage_contests`` permission.
+
+Parameters (dynamic URL path):
+
+- ``contest`` (``int``, the ID of the contest to edit)
+
+Parameters (JSON body):
+
+- ``title`` (optional ``string``)
+- ``description`` (optional ``string``)
+- ``opens_at`` (optional ``decimal``, seconds since the UNIX epoch)
+- ``closes_at`` (optional ``decimal``, seconds since the UNIX epoch)
+- ``ends_at`` (optional ``decimal``, seconds since the UNIX epoch)
+
+Returns the updated ``Contest`` object or a ``422`` error if not found (**not** a ``404`` error).
+
+``[P] GET /contests/{contest}/submissions``
+-------------------------------------------
+
+Get a list of submissions to a contest.
+
+Parameters (dynamic URL path):
+
+- ``contest`` (``int``, the ID of the contest)
+
+Returns a paginated list of ``Submission`` objects. These will include the ``votes`` and ``author`` fields only if the contest has ended or you have the ``manage_contest_submissions`` permission.
+
+Returns a ``422`` error if the contest is not found.
+
+``POST /contests/{contest}/my_submission``
+------------------------------------------
+
+Make a submission to a contest. Requires an account token with the ``make_contest_submissions`` permission. The contest must currently be open.
+
+Parameters (dynamic URL path):
+
+- ``contest`` (``int``, the ID of the contest)
+
+Parameters (JSON body):
+
+- ``title`` (``string``)
+
+Returns the newly created ``Submission`` object, without the ``votes`` or ``author`` fields.
+
+Returns a ``422`` error if the contest is not found.
+
+``PATCH /contests/{contest}/my_submission``
+-------------------------------------------
+
+Alter the metadata for your submission to a contest. The contest must currently be open.
+
+Parameters (dynamic URL path):
+
+- ``contest`` (``int``, the ID of the contest)
+
+Parameters (JSON body):
+
+- ``title`` (``string``)
+
+Returns the altered ``Submission`` object, without the ``votes`` or ``author`` fields.
+
+Returns a ``422`` error if the contest is not found, or a ``404`` error if you have no submission in the contest.
+
+``GET /contests/{contest}/my_submission``
+-----------------------------------------
+
+Get your submission to a contest.
+
+Parameters (dynamic URL path):
+
+- ``contest`` (``int``, the ID of the contest)
+
+Returns the ``Submission`` object, without the ``votes`` or ``author`` fields.
+
+Returns a ``422`` error if the contest is not found, or a ``404`` error if you have no submission in the contest.
+
+``DELETE /contests/{contest}/my_submission``
+--------------------------------------------
+
+Delete your submission to a contest.  The contest must currently be open.
+
+Parameters (dynamic URL path):
+
+- ``contest`` (``int``, the ID of the contest)
+
+Returns status code ``204`` (no content) if successful, a ``422`` error if the contest is not found, or a ``404`` error if you have no submission in the contest.
+
+``POST /contests/{contest}/my_submission/pieces/new``
+-----------------------------------------------------
+
+Add a piece to your submission in a contest. The contest must currently be open.
+
+Parameters (dynamic URL path):
+
+- ``contest`` (``int``, the ID of the contest)
+
+Parameters (JSON body):
+
+- position (optional ``int``, defaults to the end)
+- caption (optional ``string``, defaults to an empty one)
+- filename (optional ``string``, defaults to that of the later uploaded file)
+
+Returns the updated ``Submission`` object if successful, a ``422`` error if the contest is not found, or a ``404`` error if you have no submission in the contest.
+
+The submission object will not include the ``votes`` or ``author`` fields.
+
+.. warning::
+    The new piece will NOT be visible until you have attached a file to it (see below). You should attach a file to it immediately after sending this request.
+
+``PUT /contests/{contest}/my_submission/piece/{position}/file``
+---------------------------------------------------------------
+
+Attach a file to a piece, or overwrite the existing file. The contest must currently be open.
+
+Parameters (dynamic URL path):
+
+- ``contest`` (``int``, the ID of the contest)
+- ``position`` (``int``, the position of the piece in your submission)
+
+The body of the request should be a file with a MIME type of ``image``, ``audio``, ``video`` or ``text`` (any subtype is acceptable).
+
+Returns the updated ``Submission`` object if successful, a ``422`` error if the contest is not found, or a ``404`` error if you have no submission in the contest or no piece at the given position.
+
+The submission object will not include the ``votes`` or ``author`` fields.
+
+``PATCH /contests/{contest}/my_submission/piece/{position}``
+------------------------------------------------------------
+
+Edit the metadata for a piece. The contest must currently be open.
+
+Parameters (dynamic URL path):
+
+- ``contest`` (``int``, the ID of the contest)
+- ``position`` (``int``, the position of the piece in your submission)
+
+Parameters (JSON body):
+
+- position (optional ``int``, new position for the piece)
+- caption (optional ``string``)
+- filename (optional ``string``)
+
+Returns the updated ``Submission`` object if successful, a ``422`` error if the contest is not found, or a ``404`` error if you have no submission in the contest or no piece at the given position.
+
+The submission object will not include the ``votes`` or ``author`` fields.
+
+``DELETE /contests/{contest}/my_submission/piece/{position}``
+-------------------------------------------------------------
+
+Remove a piece from your submission. The contest must currently be open.
+
+Parameters (dynamic URL path):
+
+- ``contest`` (``int``, the ID of the contest)
+- ``position`` (``int``, the position of the piece in your submission)
+
+Returns the updated ``Submission`` object if successful, a ``422`` error if the contest is not found, or a ``404`` error if you have no submission in the contest or no piece at the given position.
+
+The submission object will not include the ``votes`` or ``author`` fields.
+
+``GET /submissions/{submission}``
+---------------------------------
+
+Get a submission by ID.
+
+Parameters (dynamic URL path):
+
+- ``submission`` (``int``, the ID of the submission)
+
+Returns a ``Submission`` object if successful, or a ``422`` error if not found.
+
+The submission object will include the ``votes`` and ``author`` fields only if the contest has ended or you have the ``manage_contest_submissions`` permission.
+
+``DELETE /submissions/{submission}``
+------------------------------------
+
+Delete a submission by ID. Requires the ``manage_contest_submissions`` permission.
+
+Parameters (dynamic URL path):
+
+- ``submission`` (``int``, the ID of the submission)
+
+Returns a status code ``204`` if successful, or a ``422`` error if not found.
+
+``POST /submissions/{submission}/vote``
+---------------------------------------
+
+Place a vote on a submission. Requires the ``vote_contest_submissions`` permission. The contest must currently be closed (but not ended).
+
+Parameters (dynamic URL path):
+
+- ``submission`` (``int``, the ID of the submission)
+
+Returns a status code ``204`` if successful, or a ``422`` error if not found.
+
+``DELETE /submissions/{submission}/vote``
+-----------------------------------------
+
+Remove your vote from a submission. The contest must currently be closed (but not ended).
+
+Parameters (dynamic URL path):
+
+- ``submission`` (``int``, the ID of the submission)
+
+Returns a status code ``204`` if successful, a ``404`` error if you have not voted on this submission, or a ``422`` error if not found.
+
 Callback-related endpoints
 ==========================
 

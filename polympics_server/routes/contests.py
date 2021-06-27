@@ -6,7 +6,7 @@ from fastapi import Depends, File, HTTPException, Response, UploadFile
 
 import peewee
 
-from pydantic import BaseModel
+from pydantic import BaseModel, constr
 
 from .utils import Paginate, Scope, auth_assert, authenticate, server
 from ..models import Contest, ContestState, Piece, Submission, Vote
@@ -15,8 +15,8 @@ from ..models import Contest, ContestState, Piece, Submission, Vote
 class ContestCreateForm(BaseModel):
     """Form for creating a new contest."""
 
-    title: str
-    description: str
+    title: constr(max_length=255)
+    description: constr(max_length=2047)
     opens_at: datetime
     closes_at: datetime
     ends_at: datetime
@@ -25,8 +25,8 @@ class ContestCreateForm(BaseModel):
 class ContestUpdateForm(BaseModel):
     """Form for updating an existing contest."""
 
-    title: Optional[str] = None
-    description: Optional[str] = None
+    title: Optional[constr(max_length=255)] = None
+    description: Optional[constr(max_length=2047)] = None
     opens_at: Optional[datetime] = None
     closes_at: Optional[datetime] = None
     ends_at: Optional[datetime] = None
@@ -35,15 +35,17 @@ class ContestUpdateForm(BaseModel):
 class SubmissionForm(BaseModel):
     """Form for creating or updating a submission to a contest."""
 
-    title: str
+    title: constr(max_length=255)
 
 
 class PieceForm(BaseModel):
     """Form for adding a piece to a submission or editing a piece."""
 
     position: Optional[int] = None     # Defaults to the end.
-    caption: Optional[str] = None      # Defaults to empty.
-    filename: Optional[str] = None     # Default from uploaded file.
+    # Defaults to empty.
+    caption: Optional[constr(max_length=255)] = None
+    # Default from uploaded file.
+    filename: Optional[constr(max_length=255)] = None
 
 
 def get_own_submission(
@@ -58,6 +60,26 @@ def get_own_submission(
             404, 'You do not have a submission to this contest.'
         )
     return submission
+
+
+def get_own_piece(
+        position: int,
+        submission: Submission = Depends(get_own_submission)) -> Piece:
+    """Get a piece made by the authenticated user."""
+    piece = Piece.get_or_none(
+        Piece.submission == submission, Piece.position == position
+    )
+    if not piece:
+        raise HTTPException(404, 'No piece found in given position.')
+    return piece
+
+
+def contest_state_assert(contest: Contest, state: ContestState):
+    """Make sure the contest is in a given state."""
+    if contest.state != state:
+        raise HTTPException(
+            409, f'You may only do that when the contest is {state.value}.'
+        )
 
 
 @server.get('/contests', tags=['contests'])
@@ -151,7 +173,10 @@ async def get_contest_submissions(
             Vote, peewee.JOIN.LEFT_OUTER
         ).group_by(Submission).order_by(vote_count)
     else:
-        query = Submission.select().order_by(peewee.fn.RAND())
+        # Seed by ID to make pagination consistent.
+        query = Submission.select(
+            peewee.fn.SETSEED(scope.id)
+        ).order_by(peewee.fn.RAND())
     return paginate(
         query.where(Submission.contest == contest),
         votes_and_author=scope.manage_contest_submissions or ended
@@ -165,6 +190,7 @@ async def create_submission(
         scope: Scope = Depends(authenticate)) -> dict[str, Any]:
     """Create a submission to a contest."""
     auth_assert(scope.make_contest_submissions)
+    contest_state_assert(contest, ContestState.OPEN)
     if contest.get_account_submission(scope.account):
         raise HTTPException(
             409, 'You already have a submission to this contest.'
@@ -179,8 +205,10 @@ async def create_submission(
 @server.patch('/contests/{contest}/my_submission', tags=['contests'])
 async def update_submission(
         data: SubmissionForm,
-        submission: Scope = Depends(get_own_submission)) -> dict[str, Any]:
+        submission: Submission = Depends(
+            get_own_submission)) -> dict[str, Any]:
     """Update submission metadata."""
+    contest_state_assert(submission.contest, ContestState.OPEN)
     submission.title = data.title
     submission.save()
     return submission.as_dict()
@@ -188,7 +216,8 @@ async def update_submission(
 
 @server.get('/contests/{contest}/my_submission', tags=['contests'])
 async def get_own_submission(
-        submission: Scope = Depends(get_own_submission)) -> dict[str, Any]:
+        submission: Submission = Depends(
+            get_own_submission)) -> dict[str, Any]:
     """Get your own submission to a contest."""
     return submission.as_dict()
 
@@ -199,8 +228,10 @@ async def get_own_submission(
     tags=['contests']
 )
 async def delete_own_submission(
-        submission: Scope = Depends(get_own_submission)) -> dict[str, Any]:
+        submission: Submission = Depends(
+            get_own_submission)) -> dict[str, Any]:
     """Delete your own submission to a contest."""
+    contest_state_assert(submission.contest, ContestState.OPEN)
     submission.delete_instance()
     return Response(status_code=204)
 
@@ -211,9 +242,13 @@ async def delete_own_submission(
 )
 async def create_piece(
         data: PieceForm,
-        submission: Scope = Depends(get_own_submission),
-        file: UploadFile = File()) -> dict[str, Any]:
-    """Add a piece to your submission."""
+        submission: Submission = Depends(
+            get_own_submission)) -> dict[str, Any]:
+    """Add a piece to your submission.
+
+    Note that the piece will not be visible until a file is added.
+    """
+    contest_state_assert(submission.contest, ContestState.OPEN)
     max_position = Piece.select().where(
         Piece.submission == submission
     ).count()
@@ -234,9 +269,7 @@ async def create_piece(
         submission=submission,
         position=position,
         caption=data.caption or '',
-        mime_type=file.content_type,
-        filename=file.filename[-255:],
-        data=await file.read()
+        filename=data.filename,
     )
     return submission.as_dict()
 
@@ -247,22 +280,16 @@ async def create_piece(
 )
 async def update_piece(
         data: PieceForm,
-        position: int,
-        submission: Scope = Depends(get_own_submission),
-        file: Optional[UploadFile] = File(None)) -> dict[str, Any]:
-    """Edit a piece in your submission."""
-    piece = Piece.get_or_none(
-        Piece.submission == submission, Piece.position == position
-    )
-    if not piece:
-        raise HTTPException(404, 'No piece found in given position.')
+        piece: Piece = Depends(get_own_piece)) -> dict[str, Any]:
+    """Edit metadata for a piece in your submission."""
+    contest_state_assert(piece.submission.contest, ContestState.OPEN)
     if data.caption:
         piece.caption = data.caption
     if data.filename:
         piece.filename = data.filename
     if data.position:
         max_position = Piece.select().where(
-            Piece.submission == submission
+            Piece.submission == piece.submission
         ).count() - 1
         if data.position > max_position:
             raise HTTPException(
@@ -270,23 +297,34 @@ async def update_piece(
             )
         if data.position > piece.position:
             Piece.update(position=Piece.position - 1).where(
-                Piece.submission == submission,
+                Piece.submission == piece.submission,
                 Piece.position > piece.position,
                 Piece.position <= data.position
             ).execute()
         elif data.position < piece.position:
             Piece.update(position=Piece.position + 1).where(
-                Piece.submission == submission,
+                Piece.submission == piece.submission,
                 Piece.position < piece.position,
                 Piece.position >= data.position
             ).execute()
         piece.position = data.position
-    if file:
-        piece.mime_type = file.mime_type
-        piece.filename = data.filename or file.filename
-        piece.data = await file.read()
     piece.save()
-    return submission.as_dict()
+    return piece.submission.as_dict()
+
+
+@server.put(
+    '/contests/{contest}/my_submission/piece/{position}/file',
+    tags=['contests']
+)
+async def set_piece_file(
+        file: UploadFile = File(),
+        piece: Piece = Depends(get_own_piece)) -> dict[str, Any]:
+    """Set the file associated with a piece."""
+    contest_state_assert(piece.submission.contest, ContestState.OPEN)
+    piece.mime_type = file.content_type
+    piece.filename = file.filename[-255:]
+    piece.data = await file.read()
+    piece.save()
 
 
 @server.delete(
@@ -294,20 +332,20 @@ async def update_piece(
     tags=['contests']
 )
 async def delete_piece(
-        position: int,
-        submission: Scope = Depends(get_own_submission)) -> dict[str, Any]:
+        piece: Piece = Depends(get_own_piece)) -> dict[str, Any]:
     """Delete a piece from your submission."""
+    contest_state_assert(piece.submission.contest, ContestState.OPEN)
     piece = Piece.get_or_none(
-        Piece.submission == submission, Piece.position == position
+        Piece.submission == piece.submission, Piece.position == piece.position
     )
     if not piece:
         raise HTTPException(404, 'No piece found in given position.')
     Piece.update(position=Piece.position - 1).where(
-        Piece.submission == submission,
+        Piece.submission == piece.submission,
         Piece.position > piece.position
     ).execute()
     piece.delete_instance()
-    return submission.as_dict()
+    return piece.submission.as_dict()
 
 
 @server.get('/submissions/{submission}', tags=['contests'])
@@ -346,6 +384,7 @@ async def place_submission_vote(
         submission: Submission,
         scope: Scope = Depends(authenticate)) -> Response:
     """Place a vote on a submission."""
+    contest_state_assert(submission.contest, ContestState.CLOSED)
     # Only accounts can have vote_contest_submissions, so we don't need
     # to check it's an account.
     auth_assert(scope.vote_contest_submissions)
@@ -358,6 +397,7 @@ async def remove_submission_vote(
         submission: Submission,
         scope: Scope = Depends(authenticate)) -> dict[str, Any]:
     """Remove a vote from a submission."""
+    contest_state_assert(submission.contest, ContestState.CLOSED)
     # Allow people to remove their vote even if they no longer have voting
     # permissions - check only that it's an account.
     auth_assert(scope.account)

@@ -61,9 +61,10 @@ class Submission(BaseModel):
 
     def as_dict(self, votes_and_author: bool = False) -> dict[str, Any]:
         """Get the contest as a dict to be returned as JSON."""
-        pieces = Piece.select().where(Piece.submission == self).order_by(
-            Piece.position
-        )
+        pieces = Piece.select().where(
+            Piece.submission == self,
+            Piece.mime_type.is_null(False)
+        ).order_by(Piece.position)
         extra = {}
         if votes_and_author:
             if hasattr(self, 'vote_count'):
@@ -87,9 +88,9 @@ class Piece(BaseModel):
     submission = peewee.ForeignKeyField(Submission)
     position = peewee.IntegerField()
     caption = peewee.CharField(max_length=255)
-    mime_type = peewee.CharField(max_length=255)
-    filename = peewee.CharField(max_length=255)
-    data = peewee.BlobField()
+    mime_type = peewee.CharField(max_length=255, null=True)
+    filename = peewee.CharField(max_length=255, null=True)
+    data = peewee.BlobField(null=True)
 
     @property
     def url(self) -> str:

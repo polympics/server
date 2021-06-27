@@ -156,6 +156,19 @@ class Scope:
     make_contest_submissions: bool = False
     vote_contest_submissions: bool = False
 
+    @property
+    def id(self) -> int:
+        """Get an ID for this scope.
+
+        Will be from the account ID if this is for an account, from the app
+        ID if this is an app, or else 0.
+        """
+        if self.account:
+            return self.account.id << 1 | 1
+        if self.app:
+            return self.app.id << 1 | 0
+        return 0
+
     def owns_account(self, account: Account) -> bool:
         """Check if the scope is for a given account."""
         return self.account and self.account.id == account.id

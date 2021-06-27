@@ -7,6 +7,7 @@ Polympics API Docs
 
    authentication
    endpoints
+   types
    pagination
    permissions
-   types
+   callbacks

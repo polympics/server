@@ -36,6 +36,46 @@ Attributes:
 - ``title`` (``string``)
 - ``image_url`` (``string``)
 
+``Contest``
+-----------
+
+Attributes:
+
+- ``id`` (``int``)
+- ``title`` (``string``)
+- ``description`` (``string``)
+- ``opens_at`` (``decimal``, seconds since the UNIX epoch)
+- ``closes_at`` (``decimal``, seconds since the UNIX epoch)
+- ``ends_at`` (``decimal``, seconds since the UNIX epoch)
+- ``state`` (``string``, one of ``"unopened"``, ``"open"``, ``"closed"`` or ``"ended"``)
+
+``Submissions``
+---------------
+
+Attributes:
+
+- ``id`` (``int``)
+- ``title`` (``string``)
+- ``pieces`` (``list`` of ``Piece`` objects)
+- ``author`` (``Account`` object)
+- ``votes`` (``int``)
+
+.. note::
+   Only pieces with an attached file will be included.
+
+   The ``author`` and ``votes`` fields will only be present if the contest is over or you have the ``manage_contest_submissions`` permission.
+
+``Piece``
+---------
+
+Attributes:
+
+- ``position`` (``int``)
+- ``caption`` (``string``)
+- ``mime_type`` (``string``)
+- ``filename`` (``string``)
+- ``url`` (``string``, path relative to the API root where the file can be accessed)
+
 ``Callback``
 ------------
 
