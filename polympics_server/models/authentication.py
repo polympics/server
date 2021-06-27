@@ -151,6 +151,7 @@ class Scope:
         """Check if the scope is for an account that owns a given team."""
         return (
             self.account
+            and self.account.team
             and self.account.team.id == team.id
             and self.account.manage_own_team
         )
