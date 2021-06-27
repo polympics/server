@@ -112,13 +112,13 @@ async def create_contest(
     ).as_dict()
 
 
-@server.get('/contests/{contest}', tags=['contests'])
+@server.get('/contest/{contest}', tags=['contests'])
 async def get_contest(contest: Contest) -> dict[str, Any]:
     """Get a contest by ID."""
     return contest.as_dict()
 
 
-@server.delete('/contests/{contest}', status_code=204, tags=['contests'])
+@server.delete('/contest/{contest}', status_code=204, tags=['contests'])
 async def delete_contest(
         contest: Contest,
         scope: Scope = Depends(authenticate)) -> Response:
@@ -128,7 +128,7 @@ async def delete_contest(
     return Response(status_code=204)
 
 
-@server.patch('/contests/{contest}', tags=['contests'])
+@server.patch('/contest/{contest}', tags=['contests'])
 async def update_contest(
         contest: Contest,
         data: ContestUpdateForm,
@@ -156,7 +156,7 @@ async def update_contest(
     return contest.as_dict()
 
 
-@server.get('/contests/{contest}/submissions', tags=['contests'])
+@server.get('/contest/{contest}/submissions', tags=['contests'])
 async def get_contest_submissions(
         contest: Contest,
         paginate: Paginate = Depends(Paginate),
@@ -183,7 +183,7 @@ async def get_contest_submissions(
     )
 
 
-@server.post('/contests/{contest}/my_submission', tags=['contests'])
+@server.post('/contest/{contest}/my_submission', tags=['contests'])
 async def create_submission(
         contest: Contest,
         data: SubmissionForm,
@@ -202,7 +202,7 @@ async def create_submission(
     ).as_dict()
 
 
-@server.patch('/contests/{contest}/my_submission', tags=['contests'])
+@server.patch('/contest/{contest}/my_submission', tags=['contests'])
 async def update_submission(
         data: SubmissionForm,
         submission: Submission = Depends(
@@ -214,7 +214,7 @@ async def update_submission(
     return submission.as_dict()
 
 
-@server.get('/contests/{contest}/my_submission', tags=['contests'])
+@server.get('/contest/{contest}/my_submission', tags=['contests'])
 async def get_own_submission(
         submission: Submission = Depends(
             get_own_submission)) -> dict[str, Any]:
@@ -223,7 +223,7 @@ async def get_own_submission(
 
 
 @server.delete(
-    '/contests/{contest}/my_submission',
+    '/contest/{contest}/my_submission',
     status_code=204,
     tags=['contests']
 )
@@ -237,7 +237,7 @@ async def delete_own_submission(
 
 
 @server.post(
-    '/contests/{contest}/my_submission/pieces/new',
+    '/contest/{contest}/my_submission/pieces/new',
     tags=['contests']
 )
 async def create_piece(
@@ -275,7 +275,7 @@ async def create_piece(
 
 
 @server.patch(
-    '/contests/{contest}/my_submission/piece/{position}',
+    '/contest/{contest}/my_submission/piece/{position}',
     tags=['contests']
 )
 async def update_piece(
@@ -313,7 +313,7 @@ async def update_piece(
 
 
 @server.put(
-    '/contests/{contest}/my_submission/piece/{position}/file',
+    '/contest/{contest}/my_submission/piece/{position}/file',
     tags=['contests']
 )
 async def set_piece_file(
@@ -328,7 +328,7 @@ async def set_piece_file(
 
 
 @server.delete(
-    '/contests/{contest}/my_submission/piece/{position}',
+    '/contest/{contest}/my_submission/piece/{position}',
     tags=['contests']
 )
 async def delete_piece(
@@ -348,7 +348,7 @@ async def delete_piece(
     return piece.submission.as_dict()
 
 
-@server.get('/submissions/{submission}', tags=['contests'])
+@server.get('/submission/{submission}', tags=['contests'])
 async def get_submission(
         submission: Submission,
         scope: Scope = Depends(authenticate)) -> dict[str, Any]:
@@ -363,14 +363,14 @@ async def get_submission(
     ))
 
 
-@server.delete('/submissions/{submission}', tags=['contests'])
+@server.delete('/submission/{submission}', tags=['contests'])
 async def delete_submission(
         submission: Submission,
         scope: Scope = Depends(authenticate)) -> Response:
     """Delete a submission by ID.
 
     This requires the manage_contest_submissions permission. To delete
-    your own submission, do `DELETE /contests/{contest}/my_submission`.
+    your own submission, do `DELETE /contest/{contest}/my_submission`.
     """
     auth_assert(scope.manage_contest_submissions)
     submission.delete_instance()
@@ -378,7 +378,7 @@ async def delete_submission(
 
 
 @server.post(
-    '/submissions/{submission}/vote', status_code=204, tags=['contests']
+    '/submission/{submission}/vote', status_code=204, tags=['contests']
 )
 async def place_submission_vote(
         submission: Submission,
@@ -392,7 +392,7 @@ async def place_submission_vote(
     return Response(status_code=204)
 
 
-@server.delete('/submissions/{submission}/vote', tags=['contests'])
+@server.delete('/submission/{submission}/vote', tags=['contests'])
 async def remove_submission_vote(
         submission: Submission,
         scope: Scope = Depends(authenticate)) -> dict[str, Any]:
@@ -411,7 +411,7 @@ async def remove_submission_vote(
 
 
 @server.get(
-    '/uploads/pieces/{piece}/{filename}',
+    '/uploads/piece/{piece}/{filename}',
     response_class=Response,
     tags=['uploads']
 )

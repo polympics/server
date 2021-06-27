@@ -49,8 +49,8 @@ Attributes:
 - ``ends_at`` (``decimal``, seconds since the UNIX epoch)
 - ``state`` (``string``, one of ``"unopened"``, ``"open"``, ``"closed"`` or ``"ended"``)
 
-``Submissions``
----------------
+``Submission``
+--------------
 
 Attributes:
 

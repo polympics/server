@@ -280,7 +280,7 @@ Parameters (JSON body):
 
 Returns the newly created ``Contest`` object.
 
-``GET /contests/{contest}``
+``GET /contest/{contest}``
 ---------------------------
 
 Get a contest by ID.
@@ -291,7 +291,7 @@ Parameters (dynamic URL path):
 
 Returns a ``Contest`` object or a ``422`` error if not found (**not** a ``404`` error).
 
-``DELETE /contests/{contest}``
+``DELETE /contest/{contest}``
 ------------------------------
 
 Delete a contest by ID. Requires the ``manage_contests`` permission.
@@ -302,7 +302,7 @@ Parameters (dynamic URL path):
 
 Returns status code ``204`` (no content) or a ``422`` error if not found.
 
-``PATCH /contests/{contest}``
+``PATCH /contest/{contest}``
 -----------------------------
 
 Update a contest by ID. Requires the ``manage_contests`` permission.
@@ -321,7 +321,7 @@ Parameters (JSON body):
 
 Returns the updated ``Contest`` object or a ``422`` error if not found (**not** a ``404`` error).
 
-``[P] GET /contests/{contest}/submissions``
+``[P] GET /contest/{contest}/submissions``
 -------------------------------------------
 
 Get a list of submissions to a contest.
@@ -334,7 +334,7 @@ Returns a paginated list of ``Submission`` objects. These will include the ``vot
 
 Returns a ``422`` error if the contest is not found.
 
-``POST /contests/{contest}/my_submission``
+``POST /contest/{contest}/my_submission``
 ------------------------------------------
 
 Make a submission to a contest. Requires an account token with the ``make_contest_submissions`` permission. The contest must currently be open.
@@ -351,7 +351,7 @@ Returns the newly created ``Submission`` object, without the ``votes`` or ``auth
 
 Returns a ``422`` error if the contest is not found.
 
-``PATCH /contests/{contest}/my_submission``
+``PATCH /contest/{contest}/my_submission``
 -------------------------------------------
 
 Alter the metadata for your submission to a contest. The contest must currently be open.
@@ -368,7 +368,7 @@ Returns the altered ``Submission`` object, without the ``votes`` or ``author`` f
 
 Returns a ``422`` error if the contest is not found, or a ``404`` error if you have no submission in the contest.
 
-``GET /contests/{contest}/my_submission``
+``GET /contest/{contest}/my_submission``
 -----------------------------------------
 
 Get your submission to a contest.
@@ -381,7 +381,7 @@ Returns the ``Submission`` object, without the ``votes`` or ``author`` fields.
 
 Returns a ``422`` error if the contest is not found, or a ``404`` error if you have no submission in the contest.
 
-``DELETE /contests/{contest}/my_submission``
+``DELETE /contest/{contest}/my_submission``
 --------------------------------------------
 
 Delete your submission to a contest.  The contest must currently be open.
@@ -392,7 +392,7 @@ Parameters (dynamic URL path):
 
 Returns status code ``204`` (no content) if successful, a ``422`` error if the contest is not found, or a ``404`` error if you have no submission in the contest.
 
-``POST /contests/{contest}/my_submission/pieces/new``
+``POST /contest/{contest}/my_submission/pieces/new``
 -----------------------------------------------------
 
 Add a piece to your submission in a contest. The contest must currently be open.
@@ -414,7 +414,7 @@ The submission object will not include the ``votes`` or ``author`` fields.
 .. warning::
     The new piece will NOT be visible until you have attached a file to it (see below). You should attach a file to it immediately after sending this request.
 
-``PUT /contests/{contest}/my_submission/piece/{position}/file``
+``PUT /contest/{contest}/my_submission/piece/{position}/file``
 ---------------------------------------------------------------
 
 Attach a file to a piece, or overwrite the existing file. The contest must currently be open.
@@ -430,7 +430,7 @@ Returns the updated ``Submission`` object if successful, a ``422`` error if the 
 
 The submission object will not include the ``votes`` or ``author`` fields.
 
-``PATCH /contests/{contest}/my_submission/piece/{position}``
+``PATCH /contest/{contest}/my_submission/piece/{position}``
 ------------------------------------------------------------
 
 Edit the metadata for a piece. The contest must currently be open.
@@ -450,7 +450,7 @@ Returns the updated ``Submission`` object if successful, a ``422`` error if the 
 
 The submission object will not include the ``votes`` or ``author`` fields.
 
-``DELETE /contests/{contest}/my_submission/piece/{position}``
+``DELETE /contest/{contest}/my_submission/piece/{position}``
 -------------------------------------------------------------
 
 Remove a piece from your submission. The contest must currently be open.
@@ -464,7 +464,7 @@ Returns the updated ``Submission`` object if successful, a ``422`` error if the 
 
 The submission object will not include the ``votes`` or ``author`` fields.
 
-``GET /submissions/{submission}``
+``GET /submission/{submission}``
 ---------------------------------
 
 Get a submission by ID.
@@ -477,7 +477,7 @@ Returns a ``Submission`` object if successful, or a ``422`` error if not found.
 
 The submission object will include the ``votes`` and ``author`` fields only if the contest has ended or you have the ``manage_contest_submissions`` permission.
 
-``DELETE /submissions/{submission}``
+``DELETE /submission/{submission}``
 ------------------------------------
 
 Delete a submission by ID. Requires the ``manage_contest_submissions`` permission.
@@ -488,7 +488,7 @@ Parameters (dynamic URL path):
 
 Returns a status code ``204`` if successful, or a ``422`` error if not found.
 
-``POST /submissions/{submission}/vote``
+``POST /submission/{submission}/vote``
 ---------------------------------------
 
 Place a vote on a submission. Requires the ``vote_contest_submissions`` permission. The contest must currently be closed (but not ended).
@@ -499,7 +499,7 @@ Parameters (dynamic URL path):
 
 Returns a status code ``204`` if successful, or a ``422`` error if not found.
 
-``DELETE /submissions/{submission}/vote``
+``DELETE /submission/{submission}/vote``
 -----------------------------------------
 
 Remove your vote from a submission. The contest must currently be closed (but not ended).
