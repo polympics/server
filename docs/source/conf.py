@@ -13,7 +13,7 @@ sys.path.insert(0, os.path.abspath('../..'))
 project = 'Polympics API Server'
 copyright = '2021, Artemis'
 author = 'Artemis'
-release = '0.5.1'
+release = '0.5.2'
 
 extensions = [
     'sphinx.ext.autodoc',
