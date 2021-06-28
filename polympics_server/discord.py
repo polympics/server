@@ -27,7 +27,7 @@ def get_avatar_url(data: dict[str, Any]) -> str:
     """Form the avatar URL of a user object."""
     if av_hash := data['avatar']:
         return AVATAR_URL.format(id=data['id'], hash=av_hash)
-    return NO_AVATAR_URL.format(discrim=data['discriminator'])
+    return NO_AVATAR_URL.format(discrim=data['discriminator'] % 5)
 
 
 async def get_user(token: str) -> DiscordUser:
