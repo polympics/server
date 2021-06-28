@@ -3,6 +3,7 @@ import json
 import logging
 import os
 import pathlib
+import re
 from datetime import timedelta
 
 
@@ -81,11 +82,19 @@ DEBUG = get_bool('debug', False)
 MAX_SESSION_AGE = get_timedelta('max_session_age', timedelta(days=30))
 ALLOWED_ORIGINS = get_list('allowed_origins', [])
 
-DB_NAME = config.get('db_name', 'polympics')
-DB_USER = config.get('db_user', 'polympics')
-DB_HOST = config.get('db_host', '127.0.0.1')
-DB_PORT = config.get('db_port', 5432)
-DB_PASSWORD = config['db_password']
+if 'database_url' in config:
+    DB_USER, DB_PASSWORD, DB_HOST, raw_db_port, DB_NAME = re.match(
+        r'postgres://([a-z]+):([a-z0-9]+)@([a-z0-9-]+):([0-9]+)/([a-z0-9]+)',
+        config['database_url']
+    )
+    DB_PORT = int(raw_db_port)
+else:
+    DB_NAME = config.get('db_name', 'polympics')
+    DB_USER = config.get('db_user', 'polympics')
+    DB_HOST = config.get('db_host', '127.0.0.1')
+    DB_PORT = config.get('db_port', 5432)
+    DB_PASSWORD = config['db_password']
+
 DB_LOG_LEVEL = get_log_level('db_log_level', logging.INFO)
 
 DISCORD_API_URL = config.get('discord_api_url', 'https://discord.com/api/v8')
