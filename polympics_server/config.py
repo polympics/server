@@ -86,7 +86,7 @@ if 'database_url' in config:
     DB_USER, DB_PASSWORD, DB_HOST, raw_db_port, DB_NAME = re.match(
         r'postgres://([a-z]+):([a-z0-9]+)@([a-z0-9-.]+):([0-9]+)/([a-z0-9]+)',
         config['database_url']
-    )
+    ).groups()
     DB_PORT = int(raw_db_port)
 else:
     DB_NAME = config.get('db_name', 'polympics')
