@@ -9,6 +9,7 @@ from pydantic import BaseModel
 
 from .utils import Paginate, auth_assert, authenticate, server
 from .. import discord
+from ..config import SIGNUPS_OPEN
 from ..models import Account, Callback, Event, ExplicitNone, Scope, Team
 
 
@@ -35,11 +36,19 @@ class AccountEditForm(BaseModel):
     discord_token: Optional[str] = None
 
 
+@server.get('/accounts/signups', tags=['accounts'])
+async def signups_open() -> dict[str, Any]:
+    """Check if signups are open."""
+    return {'signups_open': SIGNUPS_OPEN}
+
+
 @server.post('/accounts/new', status_code=201, tags=['accounts'])
 async def signup(
         data: SignupForm,
         scope: Scope = Depends(authenticate)) -> dict[str, Any]:
     """Create a new account."""
+    if not SIGNUPS_OPEN:
+        raise HTTPException(403, 'Signups are closed.')
     auth_assert(scope.manage_account_details)
     if data.permissions:
         auth_assert(scope.can_alter_permissions(data.team, data.permissions))

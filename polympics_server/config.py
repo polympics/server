@@ -81,6 +81,7 @@ def get_list(field: str, default: None) -> bool:
 DEBUG = get_bool('debug', False)
 MAX_SESSION_AGE = get_timedelta('max_session_age', timedelta(days=30))
 ALLOWED_ORIGINS = get_list('allowed_origins', [])
+SIGNUPS_OPEN = get_bool('signups_open', True)
 
 if 'database_url' in config:
     DB_USER, DB_PASSWORD, DB_HOST, raw_db_port, DB_NAME = re.match(

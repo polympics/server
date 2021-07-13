@@ -12,8 +12,17 @@ See :doc:`/types` for the structure of objects returned by the API.
 Account-related endpoints
 =========================
 
+``GET /accounts/signups``
+-------------------------
+
+Check if signups are open.
+
+Returns a JSON object containing:
+
+- ``signups_open`` (``boolean``)
+
 ``POST /acounts/new``
-------------------------
+---------------------
 
 Parameters (JSON body):
 
@@ -24,7 +33,7 @@ Parameters (JSON body):
 - ``team`` (optional ``int``, the ID of the team)
 - ``permissions`` (optional ``int``, default ``0``)
 
-Returns an ``Account`` object, or a ``409`` error if the ``id`` has already been registered.
+Returns an ``Account`` object, a ``409`` error if the ``id`` has already been registered, or a ``403`` error if signups are closed.
 
 Requires the ``manage_account_details`` permission. Additionally, see :doc:`/permissions` for what permissions you are allowed to grant.
 
@@ -313,7 +322,7 @@ Parameters (JSON body):
 
 - ``token`` (``string``, the Discord token)
 
-Returns a ``Session`` object. If the token was valid but the account was not found, creates the account. Returns a ``401`` error if the token was invalid. Note that the token must be authorised for the ``identify`` scope.
+Returns a ``Session`` object. If the token was valid but the account was not found, creates the account, or returns a ``403`` error if signups are closed. Returns a ``401`` error if the token was invalid Note that the token must be authorised for the ``identify`` scope.
 
 ``POST /auth/create_session``
 -----------------------------------

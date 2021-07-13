@@ -34,6 +34,7 @@ Configuration goes in the same dir as this README, in a file named `config.json`
 |:------------------|:--------------|:---------------------------------------------|
 | `debug`           | `false`       | Whether to run FastAPI in debug mode.        |
 | `max_session_age` | `"30d"`       | How long user auth sessions last.            |
+| `signups_open`    | `true`        | Whether or not people may sign up.           |
 | `db_name`         | `"polympics"` | The PostgreSQL database to connect to.       |
 | `db_user`         | `"polympics"` | The user to use to connect to the database.  |
 | `db_host`         | `"127.0.0.1"` | The host of the database to connect to.      |

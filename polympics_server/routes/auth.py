@@ -7,6 +7,7 @@ from pydantic import BaseModel
 
 from .utils import auth_assert, authenticate, server
 from .. import discord
+from ..config import SIGNUPS_OPEN
 from ..models import Account, Scope, Session
 
 
@@ -63,6 +64,11 @@ async def discord_authorise(data: DiscordAuthData) -> dict[str, Any]:
         user_data = await discord.get_user(data.token)
     except ValueError:
         raise HTTPException(401, 'Bad Discord user token.')
-    account = Account.get_or_create_by_user(user_data)
+    if SIGNUPS_OPEN:
+        account = Account.get_or_create_by_user(user_data)
+    else:
+        account = Account.get_or_none(Account.id == user_data.id)
+        if not account:
+            raise HTTPException(403, 'Signups are closed.')
     session = Session.create(account=account)
     return session.as_dict()
